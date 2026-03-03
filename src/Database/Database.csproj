@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="dbup-postgresql" Version="6.1.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Scripts\20260222215950_eric_CreateOrdersTable.sql" />
+      <None Remove="Scripts\20260222224454_eric_AddDoneColumn.sql" />
+      <None Remove="Scripts\20260223004631_eric_AddUsersTable.sql" />
+      <EmbeddedResource Include="Scripts\20260223004631_eric_AddUsersTable.sql" />
+      <None Remove="Scripts\20260223222146_eric_AddUserIdColumn.sql" />
+      <None Remove="Scripts\20260228143421_eric_AddRefreshTokens.sql" />
+      <None Remove="Scripts\20260228145722_eric_RemakeRefreshTokensTable.sql" />
+      <None Remove="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql" />
+      <EmbeddedResource Include="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql" />
+    </ItemGroup>
+
+</Project>

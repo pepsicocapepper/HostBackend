@@ -1,0 +1,51 @@
+﻿services:
+  api:
+    container_name: host.api
+    image: api
+    ports:
+      - "8080:8080"
+    networks:
+      - host-network
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    depends_on:
+      host.db.migrator:
+        condition: service_completed_successfully
+  
+  host.db.migrator:
+    container_name: host.db.migrator
+    image: migrator
+    build:
+      context: .
+      dockerfile: src/Database/Dockerfile
+    environment:
+      CONNECTION_STRING: "Server=host.db;Port=5432;Database=host;User Id=postgres;Password=postgres;"
+    depends_on:
+      host.db:
+        condition: service_healthy
+    networks:
+      - host-network
+  
+  host.db:
+    image: postgres:latest
+    container_name: host.db
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    environment:
+      - POSTGRES_DB=host
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/host-db:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - host-network
+
+networks:
+  host-network:
+    external: true
