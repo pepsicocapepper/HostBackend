@@ -4,9 +4,9 @@ namespace Infrastructure.Authentication;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static int GetUserId(this ClaimsPrincipal principal)
+    public static Guid GetUserId(this ClaimsPrincipal principal)
     {
         string? userId = principal?.FindFirstValue(ClaimTypes.NameIdentifier);
-        return int.TryParse(userId, out int parsedUserId) ? parsedUserId : throw new NullReferenceException();
+        return Guid.TryParse(userId, out var parsedUserId) ? parsedUserId : throw new NullReferenceException();
     }
 }

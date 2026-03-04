@@ -28,6 +28,8 @@
       <None Remove="Scripts\20260228145722_eric_RemakeRefreshTokensTable.sql" />
       <None Remove="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql" />
       <EmbeddedResource Include="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql" />
+      <None Remove="Scripts\20260303212150_eric_CreateProductsTable.sql" />
+      <EmbeddedResource Include="Scripts\20260303212150_eric_CreateProductsTable.sql" />
     </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ public class UserContext : IUserContext
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public int? UserId => _httpContextAccessor.HttpContext?
+    public Guid? UserId => _httpContextAccessor.HttpContext?
         .User
         .GetUserId();
 }

@@ -25,5 +25,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuth();
+app.MapProducts();
 
 app.Run();
