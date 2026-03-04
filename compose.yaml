@@ -23,9 +23,6 @@ services:
       dockerfile: src/Database/Dockerfile
     environment:
       HOST_DB_ADMIN_CONNECTION: ${HOST_DB_ADMIN_CONNECTION}
-    depends_on:
-      host.db:
-        condition: service_healthy
     networks:
       - host-network
         
