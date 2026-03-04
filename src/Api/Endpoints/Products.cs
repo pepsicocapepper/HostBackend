@@ -22,7 +22,7 @@ public static class Products
         CancellationToken ct)
     {
         var id = await handler.CreateProduct(dto, ct);
-        return TypedResults.CreatedAtRoute(id, "GetProducts");
+        return TypedResults.CreatedAtRoute(id, "GetProducts", new { });
     }
 
     private static async Task<Ok<PaginatedData<Product>>> GetPaginatedProducts([FromServices] IProductsHandler handler,
