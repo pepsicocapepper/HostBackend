@@ -8,7 +8,7 @@ internal abstract class Program
 {
     private static int Main()
     {
-        var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+        var connectionString = Environment.GetEnvironmentVariable("HOST_DB_ADMIN_CONNECTION");
         if (connectionString == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;

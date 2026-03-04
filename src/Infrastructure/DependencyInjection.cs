@@ -17,7 +17,7 @@ public static class DependencyInjection
 {
     public static void AddInfrastructure(this IHostApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        var connectionString = Environment.GetEnvironmentVariable("HOST_DB_CONNECTION");
 
         if (connectionString == null)
         {

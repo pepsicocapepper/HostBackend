@@ -1,0 +1,22 @@
+name: App deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Rebuild app
+        run: docker compose -f compose.yaml up --build -d
+        env: 
+          HOST_DB_CONNECTION: ${{secrets.HOST_DB_CONNECTION}}
+          HOST_DB_ADMIN_CONNECTION: ${{secrets.HOST_DB_ADMIN_CONNECTION}}
+
+      - name: Clean images
+        run: docker image prune -f

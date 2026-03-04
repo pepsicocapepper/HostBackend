@@ -6,6 +6,8 @@
       - "8080:8080"
     networks:
       - host-network
+    environment:
+      HOST_DB_CONNECTION: "Server=host.db;Port=5432;Database=host;User Id=postgres;Password=postgres;"
     build:
       context: .
       dockerfile: src/Api/Dockerfile
@@ -20,7 +22,7 @@
       context: .
       dockerfile: src/Database/Dockerfile
     environment:
-      CONNECTION_STRING: "Server=host.db;Port=5432;Database=host;User Id=postgres;Password=postgres;"
+      HOST_DB_ADMIN_CONNECTION: "Server=host.db;Port=5432;Database=host;User Id=postgres;Password=postgres;"
     depends_on:
       host.db:
         condition: service_healthy

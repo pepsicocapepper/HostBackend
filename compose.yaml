@@ -1,0 +1,34 @@
+services:
+  api:
+    container_name: host.api
+    image: api
+    ports:
+      - "8080:8080"
+    networks:
+      - host-network
+    environment:
+      HOST_DB_CONNECTION: ${HOST_DB_CONNECTION}
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    depends_on:
+      host.db.migrator:
+        condition: service_completed_successfully
+  
+  host.db.migrator:
+    container_name: host.db.migrator
+    image: migrator
+    build:
+      context: .
+      dockerfile: src/Database/Dockerfile
+    environment:
+      HOST_DB_ADMIN_CONNECTION: ${HOST_DB_ADMIN_CONNECTION}
+    depends_on:
+      host.db:
+        condition: service_healthy
+    networks:
+      - host-network
+        
+networks:
+  host-network:
+    external: true
