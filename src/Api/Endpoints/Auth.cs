@@ -15,7 +15,6 @@ public static class Auth
 
         authGroup.MapPost("/register", Register);
         authGroup.MapPost("/login", Login);
-        authGroup.MapGet("/protected", Test).RequireAuthorization();
         authGroup.MapGet("/refresh", RefreshToken);
     }
 
@@ -33,11 +32,9 @@ public static class Auth
     private static async Task<Results<Ok<AccessTokenDto>, UnauthorizedHttpResult>> Login(
         [FromBody] LoginUserDto command,
         HttpContext httpContext,
-        [FromServices] ILogger<Program> logger,
         [FromServices] IUsersHandler handler,
         CancellationToken ct)
     {
-        logger.LogInformation("Logging in");
         httpContext.Request.Cookies.TryGetValue("refresh-token", out var refreshToken);
         var response = await handler.LoginUser(command, refreshToken, ct);
         return response.ToAccessTokenDto(httpContext);
@@ -53,11 +50,6 @@ public static class Auth
 
         var response = await handler.RefreshToken(refreshToken, cancellationToken);
         return response.ToAccessTokenDto(httpContext);
-    }
-
-    private static string Test()
-    {
-        return "Hello";
     }
 
     private static Results<Ok<AccessTokenDto>, UnauthorizedHttpResult> ToAccessTokenDto(this TokensDto? dto,

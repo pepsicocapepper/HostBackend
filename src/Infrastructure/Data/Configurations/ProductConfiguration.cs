@@ -8,9 +8,9 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.ToTable("product");
-        builder.HasKey(t => t.Id).HasName("product_pkey");
-        builder.HasAlternateKey(t => t.Name).HasName("product_name_key");
+        builder.ToTable("item");
+        builder.HasKey(t => t.Id).HasName("item_pkey");
+        builder.HasAlternateKey(t => t.Name).HasName("item_name_key");
 
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
         builder.Property(t => t.Name).HasColumnName("name").IsRequired();
@@ -23,11 +23,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasOne(t => t.CreatedByUser)
             .WithMany(t => t.CreatedProducts)
             .HasForeignKey(t => t.CreatedBy)
-            .HasConstraintName("product_created_by_fkey");
+            .HasConstraintName("item_created_by_fkey");
 
         builder.HasOne(t => t.UpdatedByUser)
             .WithMany(t => t.UpdatedProducts)
             .HasForeignKey(t => t.UpdatedBy)
-            .HasConstraintName("product_updated_by_fkey");
+            .HasConstraintName("item_updated_by_fkey");
     }
 }

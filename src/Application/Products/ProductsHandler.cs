@@ -7,7 +7,7 @@ using Domain.Entities;
 
 namespace Application.Products;
 
-internal class ProductsHandler : IProductsHandler
+public class ProductsHandler : IProductsHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContext _userContext;

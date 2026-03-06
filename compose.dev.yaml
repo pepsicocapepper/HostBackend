@@ -23,6 +23,7 @@
       dockerfile: src/Database/Dockerfile
     environment:
       HOST_DB_ADMIN_CONNECTION: "Server=host.db;Port=5432;Database=host;User Id=postgres;Password=postgres;"
+      ENVIRONMENT: "Development"
     depends_on:
       host.db:
         condition: service_healthy

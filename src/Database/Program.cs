@@ -8,6 +8,7 @@ internal abstract class Program
 {
     private static int Main()
     {
+        var env = Environment.GetEnvironmentVariable("ENVIRONMENT");
         var connectionString = Environment.GetEnvironmentVariable("HOST_DB_ADMIN_CONNECTION");
         if (connectionString == null)
         {
@@ -17,11 +18,12 @@ internal abstract class Program
             return -1;
         }
 
+        DropDatabase.For.PostgresqlDatabase(connectionString);
         EnsureDatabase.For.PostgresqlDatabase(connectionString);
 
         DbUp.Engine.UpgradeEngine upgrader = DeployChanges
             .To.PostgresqlDatabase(connectionString)
-            .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+            .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), script => script.Contains(".Scripts."))
             .WithTransaction()
             .LogToConsole()
             .Build();
@@ -30,7 +32,24 @@ internal abstract class Program
         if (!result.Successful)
         {
             Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(result.Error);
             return -1;
+        }
+
+        if (env is "Development" or "Staging")
+        {
+            var seeder = DeployChanges.To.PostgresqlDatabase(connectionString)
+                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), script => script.Contains(".Seeds."))
+                .WithTransaction()
+                .LogToConsole()
+                .JournalToPostgresqlTable("public", "seeds_journal")
+                .Build();
+            var seederResult = seeder.PerformUpgrade();
+            if (!seederResult.Successful)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(seederResult.Error);
+            }
         }
 
         Console.ForegroundColor = ConsoleColor.Green;

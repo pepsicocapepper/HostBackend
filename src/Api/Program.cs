@@ -24,6 +24,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapMenus();
 app.MapAuth();
 app.MapProducts();
 

@@ -1,5 +1,5 @@
 -- Created by eric on 3/3/26 - 21:21:50
-CREATE TABLE product
+CREATE TABLE item
 (
     id         SERIAL4 PRIMARY KEY,
     name       TEXT           NOT NULL UNIQUE,

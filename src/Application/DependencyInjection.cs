@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Application.Menus;
 using Application.Products;
 using Application.Users;
 using FluentValidation;
@@ -15,5 +16,6 @@ public static class DependencyInjection
         builder.Services.AddAutoMapper(cfg => { cfg.AddMaps(Assembly.GetExecutingAssembly()); });
         builder.Services.AddScoped<IUsersHandler, UsersHandler>();
         builder.Services.AddScoped<IProductsHandler, ProductsHandler>();
+        builder.Services.AddScoped<IMenusHandler, MenusHandler>();
     }
 }
