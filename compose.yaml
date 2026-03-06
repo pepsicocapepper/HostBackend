@@ -23,6 +23,7 @@ services:
       dockerfile: src/Database/Dockerfile
     environment:
       HOST_DB_ADMIN_CONNECTION: ${HOST_DB_ADMIN_CONNECTION}
+      ENVIRONMENT: "Staging"
     networks:
       - host-network
         
