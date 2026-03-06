@@ -1,31 +1,31 @@
 using Application.Common.Models;
-using Application.Products;
-using Application.Products.Dtos;
+using Application.Items;
+using Application.Items.Dtos;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints;
 
-public static class Products
+public static class Items
 {
     public static void MapProducts(this WebApplication app)
     {
-        var group = app.MapGroup("/products");
+        var group = app.MapGroup("/items");
 
         group.MapGet("/", GetPaginatedProducts).WithName("GetProducts");
         group.MapPost("/", CreateProduct).RequireAuthorization();
     }
 
-    private static async Task<CreatedAtRoute<int>> CreateProduct([FromServices] IProductsHandler handler,
-        [FromBody] CreateProductDto dto,
+    private static async Task<CreatedAtRoute<int>> CreateProduct([FromServices] IItemsHandler handler,
+        [FromBody] CreateItemDto dto,
         CancellationToken ct)
     {
         var id = await handler.CreateProduct(dto, ct);
         return TypedResults.CreatedAtRoute(id, "GetProducts", new { });
     }
 
-    private static async Task<Ok<PaginatedData<Product>>> GetPaginatedProducts([FromServices] IProductsHandler handler,
+    private static async Task<Ok<PaginatedData<Item>>> GetPaginatedProducts([FromServices] IItemsHandler handler,
         CancellationToken ct)
     {
         var products = await handler.GetProducts(ct);

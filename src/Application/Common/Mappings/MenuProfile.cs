@@ -6,9 +6,6 @@ namespace Application.Common.Mappings;
 
 public class MenuProfile : Profile
 {
-    public MenuProfile()
-    {
-        CreateMap<Menu, MenusResponseDto>();
-    }
+    
     
 }

@@ -1,8 +1,11 @@
 using Application.Common.Interfaces;
+using Application.Common.Mappings;
+using Application.Common.Models;
+using Application.Items;
 using Application.Menus.Dtos;
-using Application.Products;
-using Application.Products.Dtos;
+using Application.Items.Dtos;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,9 +15,9 @@ public class MenusHandler : IMenusHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
-    private readonly IProductsHandler _productsHandler;
+    private readonly IItemsHandler _productsHandler;
 
-    public MenusHandler(IApplicationDbContext dbContext, IMapper mapper, IProductsHandler productsHandler)
+    public MenusHandler(IApplicationDbContext dbContext, IMapper mapper, IItemsHandler productsHandler)
     {
         _dbContext = dbContext;
         _mapper = mapper;
@@ -35,18 +38,18 @@ public class MenusHandler : IMenusHandler
         return menu.Id;
     }
 
-    public async Task<IEnumerable<MenusResponseDto>> GetMenus(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<MenuDto>> GetMenus(CancellationToken cancellationToken = default)
     {
         var allItems = await _dbContext.Menus.ToListAsync(cancellationToken);
         var tree = allItems.Where(i => i.ParentMenuId == null).ToList();
-        return _mapper.Map<IEnumerable<MenusResponseDto>>(tree);
+        return _mapper.Map<IEnumerable<MenuDto>>(tree);
     }
 
-    public async Task<int> CreateItemInMenu(int menuId, CreateProductDto createProductDto,
+    public async Task<int> CreateItemInMenu(int menuId, CreateItemDto createItemDto,
         CancellationToken cancellationToken = default)
     {
-        var productId = await _productsHandler.CreateProduct(createProductDto, cancellationToken);
-        
+        var productId = await _productsHandler.CreateProduct(createItemDto, cancellationToken);
+
         var menuExists = await _dbContext.Menus.AnyAsync(m => m.Id == menuId, cancellationToken);
         if (!menuExists)
         {
@@ -61,5 +64,12 @@ public class MenusHandler : IMenusHandler
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         return productId;
+    }
+
+    public async Task<PaginatedData<ItemDto>> GetItemsInMenu(int menuId, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.MenuItems.Where(mi => mi.MenuId == menuId).Select(mi => mi.Item)
+            .ProjectTo<ItemDto>(_mapper.ConfigurationProvider, cancellationToken)
+            .PaginatedListAsync(1, 10, cancellationToken: cancellationToken);
     }
 }

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class ProductConfiguration : IEntityTypeConfiguration<Product>
+public class ProductConfiguration : IEntityTypeConfiguration<Item>
 {
-    public void Configure(EntityTypeBuilder<Product> builder)
+    public void Configure(EntityTypeBuilder<Item> builder)
     {
         builder.ToTable("item");
         builder.HasKey(t => t.Id).HasName("item_pkey");
@@ -21,12 +21,12 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(t => t.UpdatedBy).HasColumnName("updated_by");
 
         builder.HasOne(t => t.CreatedByUser)
-            .WithMany(t => t.CreatedProducts)
+            .WithMany(t => t.CreatedItems)
             .HasForeignKey(t => t.CreatedBy)
             .HasConstraintName("item_created_by_fkey");
 
         builder.HasOne(t => t.UpdatedByUser)
-            .WithMany(t => t.UpdatedProducts)
+            .WithMany(t => t.UpdatedItems)
             .HasForeignKey(t => t.UpdatedBy)
             .HasConstraintName("item_updated_by_fkey");
     }

@@ -2,41 +2,41 @@ using Application.Common.Abstractions;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
-using Application.Products.Dtos;
+using Application.Items.Dtos;
 using Domain.Entities;
 
-namespace Application.Products;
+namespace Application.Items;
 
-public class ProductsHandler : IProductsHandler
+public class ItemsHandler : IItemsHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContext _userContext;
 
-    public ProductsHandler(IApplicationDbContext dbContext, IUserContext userContext)
+    public ItemsHandler(IApplicationDbContext dbContext, IUserContext userContext)
     {
         _dbContext = dbContext;
         _userContext = userContext;
     }
 
-    public async Task<int> CreateProduct(CreateProductDto createProductDto,
+    public async Task<int> CreateProduct(CreateItemDto createItemDto,
         CancellationToken cancellationToken = default)
     {
-        var product = new Product
+        var product = new Item
         {
-            Name = createProductDto.Name,
-            Price = createProductDto.Price,
+            Name = createItemDto.Name,
+            Price = createItemDto.Price,
             CreatedBy = _userContext.UserId!.Value
         };
 
-        await _dbContext.Products.AddAsync(product, cancellationToken);
+        await _dbContext.Item.AddAsync(product, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return product.Id;
     }
 
-    public Task<PaginatedData<Product>> GetProducts(CancellationToken cancellationToken = default)
+    public Task<PaginatedData<Item>> GetProducts(CancellationToken cancellationToken = default)
     {
         var products = _dbContext
-            .Products
+            .Item
             .PaginatedListAsync(1, 10, cancellationToken);
         return products;
     }

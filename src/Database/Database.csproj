@@ -38,6 +38,8 @@
       <EmbeddedResource Include="Seeds\20260305121949_eric_SeedUsers.sql" />
       <None Remove="Seeds\20260305122047_eric_AddMenus.sql" />
       <EmbeddedResource Include="Seeds\20260305122047_eric_AddMenus.sql" />
+      <None Remove="Seeds\20260306124122_eric_SeedItems.sql" />
+      <EmbeddedResource Include="Seeds\20260306124122_eric_SeedItems.sql" />
     </ItemGroup>
 
 </Project>

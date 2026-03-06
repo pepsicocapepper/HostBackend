@@ -12,7 +12,7 @@ public static class MapperExtensions
         CancellationToken cancellationToken = default) where TDestination : class
         => PaginatedData<TDestination>.CreateAsync(queryable.AsNoTracking(), pageNumber, pageSize, cancellationToken);
 
-    public static Task<List<TDestination>> ProjectToListAsync<TDestination>(this IQueryable queryable,
+    public static Task<List<TDestination>> ProjectToListAsync<TDestination>(this IQueryable<TDestination> queryable,
         IConfigurationProvider configurationProvider, CancellationToken cancellationToken = default)
         where TDestination : class
         => queryable.ProjectTo<TDestination>(configurationProvider).AsNoTracking().ToListAsync(cancellationToken);

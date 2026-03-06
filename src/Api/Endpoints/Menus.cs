@@ -1,7 +1,7 @@
+using Application.Common.Models;
+using Application.Items.Dtos;
 using Application.Menus;
 using Application.Menus.Dtos;
-using Application.Products.Dtos;
-using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +15,7 @@ public static class Menus
 
         group.MapGet("/", GetMenus).RequireAuthorization();
         group.MapPost("/", CreateMenu).RequireAuthorization();
+        group.MapGet("/{menuId}/items", GetItemsInMenu).RequireAuthorization();
         group.MapPost("/{menuId}/items", CreateItemInMenu).RequireAuthorization();
     }
 
@@ -25,18 +26,26 @@ public static class Menus
         return TypedResults.Created("/menus", result);
     }
 
-    private static async Task<Ok<IEnumerable<MenusResponseDto>>> GetMenus([FromServices] IMenusHandler handler,
+    private static async Task<Ok<IEnumerable<MenuDto>>> GetMenus([FromServices] IMenusHandler handler,
         CancellationToken ct)
     {
         var menus = await handler.GetMenus(ct);
         return TypedResults.Ok(menus);
     }
 
-    private static async Task<Ok<int>> CreateItemInMenu([FromBody] CreateProductDto createProductDto,
+    private static async Task<Ok<int>> CreateItemInMenu([FromBody] CreateItemDto createProductDto,
         [FromServices] IMenusHandler handler, CancellationToken ct, string menuId)
     {
         var parsedMenuId = int.Parse(menuId);
         var result = await handler.CreateItemInMenu(parsedMenuId, createProductDto, ct);
+        return TypedResults.Ok(result);
+    }
+
+    private static async Task<Ok<PaginatedData<ItemDto>>> GetItemsInMenu([FromServices] IMenusHandler handler,
+        CancellationToken ct, string menuId)
+    {
+        var parsedMenuId = int.Parse(menuId);
+        var result = await handler.GetItemsInMenu(parsedMenuId, ct);
         return TypedResults.Ok(result);
     }
 }

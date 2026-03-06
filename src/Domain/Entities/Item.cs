@@ -2,7 +2,7 @@ using Domain.Common;
 
 namespace Domain.Entities;
 
-public class Product : BaseEntity<int>
+public class Item : BaseEntity<int>
 {
     public required string Name { get; set; }
     public decimal Price { get; set; }

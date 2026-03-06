@@ -9,6 +9,6 @@ public class User : BaseEntity<Guid>
     public required string Pin { get; set; }
     public DateTime CreatedAt { get; set; }
     public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
-    public IEnumerable<Product>? CreatedProducts { get; set; }
-    public IEnumerable<Product>? UpdatedProducts { get; set; }
+    public IEnumerable<Item>? CreatedItems { get; set; }
+    public IEnumerable<Item>? UpdatedItems { get; set; }
 }
