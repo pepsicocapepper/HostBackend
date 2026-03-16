@@ -13,7 +13,8 @@ public static class Items
     {
         var group = app.MapGroup("/items");
 
-        group.MapGet("/", GetPaginatedProducts).WithName("GetProducts");
+        group.MapGet("/", GetPaginatedItems).WithName("GetProducts");
+        group.MapGet("/all", GetAllItems).WithName("GetAllItems");
         group.MapPost("/", CreateProduct).RequireAuthorization();
     }
 
@@ -21,14 +22,21 @@ public static class Items
         [FromBody] CreateItemDto dto,
         CancellationToken ct)
     {
-        var id = await handler.CreateProduct(dto, ct);
+        var id = await handler.CreateItem(dto, ct);
         return TypedResults.CreatedAtRoute(id, "GetProducts", new { });
     }
 
-    private static async Task<Ok<PaginatedData<Item>>> GetPaginatedProducts([FromServices] IItemsHandler handler,
+    private static async Task<Ok<PaginatedData<Item>>> GetPaginatedItems([FromServices] IItemsHandler handler,
         CancellationToken ct)
     {
-        var products = await handler.GetProducts(ct);
+        var products = await handler.GetPaginatedItems(ct);
         return TypedResults.Ok(products);
+    }
+
+    private static async Task<Ok<IEnumerable<ItemDto>>> GetAllItems([FromServices] IItemsHandler handler,
+        CancellationToken ct)
+    {
+        var items = await handler.GetAllItems(ct);
+        return TypedResults.Ok(items);
     }
 }

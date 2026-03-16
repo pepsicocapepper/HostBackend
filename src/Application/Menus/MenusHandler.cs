@@ -45,10 +45,35 @@ public class MenusHandler : IMenusHandler
         return _mapper.Map<IEnumerable<MenuDto>>(tree);
     }
 
+    public async Task<IEnumerable<RawMenuDto>> GetAllMenus(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext
+            .Menus
+            .Select(menu => new RawMenuDto
+                {
+                    Id = menu.Id,
+                    Name = menu.Name,
+                    PosName = menu.PosName,
+                    ParentMenuId = menu.ParentMenuId,
+                    Items = menu.MenuItems.Select(mi => new ItemDto
+                        {
+                            Id = mi.Item.Id,
+                            Name = mi.Item.Name,
+                            Price = mi.Item.Price,
+                            CreatedAt = mi.Item.CreatedAt,
+                            CreatedBy = mi.Item.CreatedBy,
+                            UpdatedAt = mi.Item.UpdatedAt,
+                            UpdatedBy = mi.Item.UpdatedBy
+                        }
+                    ).ToList()
+                }
+            ).ToListAsync(cancellationToken);
+    }
+
     public async Task<int> CreateItemInMenu(int menuId, CreateItemDto createItemDto,
         CancellationToken cancellationToken = default)
     {
-        var productId = await _productsHandler.CreateProduct(createItemDto, cancellationToken);
+        var productId = await _productsHandler.CreateItem(createItemDto, cancellationToken);
 
         var menuExists = await _dbContext.Menus.AnyAsync(m => m.Id == menuId, cancellationToken);
         if (!menuExists)

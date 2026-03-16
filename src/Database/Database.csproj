@@ -22,6 +22,7 @@
       <None Remove="Scripts\20260222215950_eric_CreateOrdersTable.sql" />
       <None Remove="Scripts\20260222224454_eric_AddDoneColumn.sql" />
       <None Remove="Scripts\20260223004631_eric_AddUsersTable.sql" />
+      <EmbeddedResource Include="Permissions\20260316180922_eric_UserPermissions.sql" />
       <EmbeddedResource Include="Scripts\20260223004631_eric_AddUsersTable.sql" />
       <None Remove="Scripts\20260223222146_eric_AddUserIdColumn.sql" />
       <None Remove="Scripts\20260228143421_eric_AddRefreshTokens.sql" />
@@ -40,6 +41,13 @@
       <EmbeddedResource Include="Seeds\20260305122047_eric_AddMenus.sql" />
       <None Remove="Seeds\20260306124122_eric_SeedItems.sql" />
       <EmbeddedResource Include="Seeds\20260306124122_eric_SeedItems.sql" />
+      <None Remove="Scripts\20260315130202_eric_CreateOrderTable.sql" />
+      <EmbeddedResource Include="Scripts\20260315130202_eric_CreateOrderTable.sql" />
+      <None Remove="Scripts\20260315130445_eric_CreateOrderItems.sql" />
+      <EmbeddedResource Include="Scripts\20260315130445_eric_CreateOrderItems.sql" />
+      <None Remove="Seeds\20260316162245_eric_SeedMenuItems.sql" />
+      <EmbeddedResource Include="Seeds\20260316162245_eric_SeedMenuItems.sql" />
+      <None Remove="Seeds\20260316180922_eric_UserPermissions.sql" />
     </ItemGroup>
 
 </Project>

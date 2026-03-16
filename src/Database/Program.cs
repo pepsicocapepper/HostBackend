@@ -50,6 +50,22 @@ internal abstract class Program
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(seederResult.Error);
             }
+
+            if (env is "Staging")
+            {
+                var permissions = DeployChanges.To.PostgresqlDatabase(connectionString)
+                    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(),
+                        script => script.Contains(".Permissions."))
+                    .WithTransaction()
+                    .LogToConsole()
+                    .Build();
+                var permissionsResult = permissions.PerformUpgrade();
+                if (!permissionsResult.Successful)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(permissionsResult.Error);
+                }
+            }
         }
 
         Console.ForegroundColor = ConsoleColor.Green;

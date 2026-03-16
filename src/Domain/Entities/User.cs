@@ -11,4 +11,5 @@ public class User : BaseEntity<Guid>
     public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
     public IEnumerable<Item>? CreatedItems { get; set; }
     public IEnumerable<Item>? UpdatedItems { get; set; }
+    public IEnumerable<Bill>? Bills { get; set; }
 }

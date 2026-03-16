@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Application.Bills;
 using Application.Items;
 using Application.Menus;
 using Application.Users;
@@ -17,5 +18,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<IUsersHandler, UsersHandler>();
         builder.Services.AddScoped<IItemsHandler, ItemsHandler>();
         builder.Services.AddScoped<IMenusHandler, MenusHandler>();
+        builder.Services.AddScoped<IBillsHandler, BillsHandler>();
     }
 }

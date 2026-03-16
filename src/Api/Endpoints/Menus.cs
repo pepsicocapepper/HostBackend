@@ -1,3 +1,4 @@
+using Api.Common.Extensions;
 using Application.Common.Models;
 using Application.Items.Dtos;
 using Application.Menus;
@@ -13,7 +14,8 @@ public static class Menus
     {
         var group = app.MapGroup("/menus");
 
-        group.MapGet("/", GetMenus).RequireAuthorization();
+        group.MapGet("/", GetMenus);
+        group.MapGet("/all", GetAllMenus).RequireHeader("X-Pos-Key");
         group.MapPost("/", CreateMenu).RequireAuthorization();
         group.MapGet("/{menuId}/items", GetItemsInMenu).RequireAuthorization();
         group.MapPost("/{menuId}/items", CreateItemInMenu).RequireAuthorization();
@@ -30,6 +32,13 @@ public static class Menus
         CancellationToken ct)
     {
         var menus = await handler.GetMenus(ct);
+        return TypedResults.Ok(menus);
+    }
+
+    private static async Task<Ok<IEnumerable<RawMenuDto>>> GetAllMenus([FromServices] IMenusHandler handler,
+        CancellationToken ct)
+    {
+        var menus = await handler.GetAllMenus(ct);
         return TypedResults.Ok(menus);
     }
 

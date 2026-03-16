@@ -27,5 +27,6 @@ app.UseAuthorization();
 app.MapMenus();
 app.MapAuth();
 app.MapProducts();
+app.MapBills();
 
 app.Run();

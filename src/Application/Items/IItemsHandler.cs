@@ -6,6 +6,7 @@ namespace Application.Items;
 
 public interface IItemsHandler
 {
-    Task<int> CreateProduct(CreateItemDto createItemDto, CancellationToken cancellationToken = default);
-    Task<PaginatedData<Item>> GetProducts(CancellationToken cancellationToken);
+    Task<int> CreateItem(CreateItemDto createItemDto, CancellationToken cancellationToken = default);
+    Task<PaginatedData<Item>> GetPaginatedItems(CancellationToken cancellationToken);
+    Task<IEnumerable<ItemDto>> GetAllItems(CancellationToken cancellationToken = default);
 }
