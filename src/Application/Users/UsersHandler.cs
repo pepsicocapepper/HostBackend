@@ -5,6 +5,8 @@ using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Application.Common.Models;
+using Application.Common.Mappings;
 
 namespace Application.Users;
 
@@ -19,19 +21,29 @@ public class UsersHandler : IUsersHandler
         _tokenProvider = tokenProvider;
     }
 
+    public Task<PaginatedData<User>> GetUsers(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
+    {
+        var users =  _dbContext
+            .Users
+            .PaginatedListAsync(1,10,cancellationToken);
+        return users;
+    }
     public async Task<Guid> RegisterUser(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
     {
         var user = new User
         {
             Name = registerUserDto.Name,
             Surname = registerUserDto.Surname,
-            Pin = registerUserDto.Pin
+            Pin = registerUserDto.Pin,
+            Active = registerUserDto.Active,
+            Job_Title = registerUserDto.Job_Title
         };
 
         await _dbContext.Users.AddAsync(user, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return user.Id;
     }
+
 
     public async Task<TokensDto?> LoginUser(LoginUserDto loginUserDto, string? existingRefreshToken,
         CancellationToken cancellationToken)
