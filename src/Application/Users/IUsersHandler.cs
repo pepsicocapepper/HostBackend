@@ -1,6 +1,8 @@
 using Application.Common.Dtos;
+using Application.Common.Models;
 using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Dto;
 
 namespace Application.Users;
 
@@ -12,4 +14,6 @@ public interface IUsersHandler
         CancellationToken cancellationToken);
 
     Task<TokensDto?> RefreshToken(string refreshToken, CancellationToken cancellationToken);
+
+    Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken);
 }

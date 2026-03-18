@@ -1,6 +1,9 @@
 using Application.Common.Models;
 using Application.Items;
 using Application.Items.Dtos;
+using Application.Users;
+using Application.Users.Commands.RegisterUser;
+using Application.Users.Dto;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -8,35 +11,28 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Endpoints;
 
 public static class Users
-{//TODO: Mapear funciones del handler a este metodo para crear nuestro endpoint
+{
     public static void MapUsers(this WebApplication app)
     {
         var group = app.MapGroup("/users");
 
-        group.MapGet("/", GetPaginatedItems).WithName("GetProducts");
-        group.MapGet("/all", GetAllItems).WithName("GetAllItems");
-        group.MapPost("/", CreateProduct).RequireAuthorization();
+        group.MapPost("/", CreateUser).RequireAuthorization();
+        group.MapGet("/", GetPaginatedUsers).WithName("GetPaginatedUsers");
     }
 
-    private static async Task<CreatedAtRoute<int>> CreateProduct([FromServices] IItemsHandler handler,
-        [FromBody] CreateItemDto dto,
+    private static async Task<CreatedAtRoute<Guid>> CreateUser([FromServices] IUsersHandler handler,
+        [FromBody] RegisterUserDto dto,
         CancellationToken ct)
     {
-        var id = await handler.CreateItem(dto, ct);
-        return TypedResults.CreatedAtRoute(id, "GetProducts", new { });
+        var id = await handler.RegisterUser(dto, ct);
+        return TypedResults.CreatedAtRoute(id, "GetPaginatedUsers", new { });
     }
 
-    private static async Task<Ok<PaginatedData<Item>>> GetPaginatedItems([FromServices] IItemsHandler handler,
+    private static async Task<Ok<PaginatedData<UserDto>>> GetPaginatedUsers([FromServices] IUsersHandler handler,
         CancellationToken ct)
     {
-        var products = await handler.GetPaginatedItems(ct);
-        return TypedResults.Ok(products);
+        var users = await handler.GetPaginatedUsers(ct);
+        return TypedResults.Ok(users);
     }
 
-    private static async Task<Ok<IEnumerable<ItemDto>>> GetAllItems([FromServices] IItemsHandler handler,
-        CancellationToken ct)
-    {
-        var items = await handler.GetAllItems(ct);
-        return TypedResults.Ok(items);
-    }
 }

@@ -7,24 +7,30 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Application.Common.Models;
 using Application.Common.Mappings;
+using Application.Users.Dto;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Application.Users;
 
 public class UsersHandler : IUsersHandler
-{
+{   
+    private readonly IMapper _mapper;
     private readonly IApplicationDbContext _dbContext;
     private readonly ITokenProvider _tokenProvider;
 
-    public UsersHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider)
+    public UsersHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider, IMapper mapper) 
     {
         _dbContext = dbContext;
         _tokenProvider = tokenProvider;
+        _mapper = mapper;
     }
 
-    public Task<PaginatedData<User>> GetUsers(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
+    public async Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken)
     {
-        var users =  _dbContext
+         var users = await _dbContext
             .Users
+            .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(1,10,cancellationToken);
         return users;
     }
@@ -36,7 +42,7 @@ public class UsersHandler : IUsersHandler
             Surname = registerUserDto.Surname,
             Pin = registerUserDto.Pin,
             Active = registerUserDto.Active,
-            Job_Title = registerUserDto.Job_Title
+            JobTitle = registerUserDto.Job_Title
         };
 
         await _dbContext.Users.AddAsync(user, cancellationToken);
@@ -63,4 +69,5 @@ public class UsersHandler : IUsersHandler
         if (dbToken is null) throw new InvalidOperationException("Refresh token not found");
         return await _tokenProvider.GenerateTokensAsync(dbToken.User, dbToken.Token);
     }
+
 }

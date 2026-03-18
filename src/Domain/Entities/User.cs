@@ -7,7 +7,7 @@ public class User : BaseEntity<Guid>
     public required string Name { get; set; }
     public required string Surname { get; set; }
     public required string Pin { get; set; }
-    public required string Job_Title  { get; set; }
+    public required string JobTitle  { get; set; }
     public required bool Active { get; set; }
     public DateTime CreatedAt { get; set; }
     public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
