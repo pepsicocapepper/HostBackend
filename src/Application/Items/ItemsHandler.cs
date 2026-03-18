@@ -36,9 +36,9 @@ public class ItemsHandler : IItemsHandler
         return product.Id;
     }
 
-    public Task<PaginatedData<Item>> GetPaginatedItems(CancellationToken cancellationToken = default)
+    public async Task<PaginatedData<Item>> GetPaginatedItems(CancellationToken cancellationToken = default)
     {
-        var products = _dbContext
+        var products = await _dbContext
             .Item
             .PaginatedListAsync(1, 10, cancellationToken);
         return products;
