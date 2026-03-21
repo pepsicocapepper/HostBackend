@@ -2,6 +2,7 @@
 using Application.Common;
 using Application.Common.Abstractions;
 using Application.Common.Interfaces;
+using Domain.Common;
 using Infrastructure.Authentication;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,11 @@ public static class DependencyInjection
             throw new ArgumentNullException(nameof(connectionString));
         }
 
-        builder.Services.AddDbContext<ApplicationDbContext>((sp, options) => { options.UseNpgsql(connectionString); });
+        builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        {
+            options.UseNpgsql(connectionString, o =>
+                o.MapEnum<Denomination>("denomination"));
+        });
 
         builder.Services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<ApplicationDbContext>());

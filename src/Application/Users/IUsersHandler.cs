@@ -10,6 +10,7 @@ public interface IUsersHandler
 
     Task<TokensDto?> LoginUser(LoginUserDto loginUserDto, string? existingRefreshToken,
         CancellationToken cancellationToken);
+    
 
     Task<TokensDto?> RefreshToken(string refreshToken, CancellationToken cancellationToken);
 }

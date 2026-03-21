@@ -3,7 +3,6 @@ CREATE TABLE item
 (
     id         SERIAL4 PRIMARY KEY,
     name       TEXT           NOT NULL UNIQUE,
-    price      DECIMAL(12, 2) NOT NULL,
     created_by UUID           NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_by UUID,

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class ProductConfiguration : IEntityTypeConfiguration<Item>
+public class ItemConfiguration : IEntityTypeConfiguration<Item>
 {
     public void Configure(EntityTypeBuilder<Item> builder)
     {
@@ -14,7 +14,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Item>
 
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
         builder.Property(t => t.Name).HasColumnName("name").IsRequired();
-        builder.Property(t => t.Price).HasColumnName("price").IsRequired();
         builder.Property(t => t.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(t => t.CreatedBy).HasColumnName("created_by").IsRequired();
         builder.Property(t => t.UpdatedAt).HasColumnName("updated_at");
