@@ -31,7 +31,7 @@ public class ItemsHandler : IItemsHandler
         {
             Name = createItemDto.Name,
             CreatedBy = _userContext.UserId!.Value,
-            Prices = createItemDto.Prices.Select(ip => new ItemPrice
+            BasePrices = createItemDto.Prices.Select(ip => new ItemBasePrice
             {
                 Price = ip.Price,
                 Denomination = ip.Denomination
@@ -56,8 +56,8 @@ public class ItemsHandler : IItemsHandler
     {
         return await _dbContext
             .Item
-            .Where(i => i.Prices.Any(ip => denomination == null || ip.Denomination == denomination))
-            .Include(i => i.Prices)
+            .Where(i => i.BasePrices.Any(ip => denomination == null || ip.Denomination == denomination))
+            .Include(i => i.BasePrices)
             .ProjectTo<ItemWithPriceDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }

@@ -1,11 +1,15 @@
+using System.Buffers.Binary;
+using System.Runtime.InteropServices;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Items;
 using Application.Menus.Dtos;
 using Application.Items.Dtos;
+using Application.Menus.Mappings;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Common;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,7 +49,8 @@ public class MenusHandler : IMenusHandler
         return _mapper.Map<IEnumerable<MenuDto>>(tree);
     }
 
-    public async Task<IEnumerable<PosMenuDto>> GetAllMenus(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PosMenuDto>> GetAllMenus(Denomination? denomination,
+        CancellationToken cancellationToken = default)
     {
         return await _dbContext
             .Menus
@@ -56,6 +61,9 @@ public class MenusHandler : IMenusHandler
                     Id = menu.Id,
                     Name = menu.Name,
                     PosName = menu.PosName,
+                    Color = menu.Color != null && menu.Color.Length > 0
+                        ? BinaryPrimitives.ReadInt32BigEndian(menu.Color)
+                        : null,
                     Subgroups = menu.SubMenus != null
                         ? menu.SubMenus.Select(sg =>
                             new PosSubgroupDto
@@ -63,22 +71,21 @@ public class MenusHandler : IMenusHandler
                                 Id = sg.Id,
                                 Name = sg.Name,
                                 PosName = sg.PosName,
-                                Items = sg.MenuItems.Select(mi => new ItemWithPriceDto
-                                    {
-                                        Id = mi.Item.Id,
-                                        Name = mi.Item.Name,
-                                        Price = mi.Item.Prices
-                                            .Select(p => new ItemPriceDto
-                                            {
-                                                Price = p.Price,
-                                                Denomination = p.Denomination.ToString()
-                                            }).First(),
-                                        CreatedAt = mi.Item.CreatedAt,
-                                        CreatedBy = mi.Item.CreatedBy,
-                                        UpdatedAt = mi.Item.UpdatedAt,
-                                        UpdatedBy = mi.Item.UpdatedBy
-                                    }
-                                ).ToList(),
+                                Color = sg.Color != null && sg.Color.Length > 0
+                                    ? BinaryPrimitives.ReadInt32BigEndian(sg.Color)
+                                    : null,
+                                Items = sg.MenuItems
+                                    .AsQueryable()
+                                    .Where(mi =>
+                                        mi.Item.PricingModel == PricingModel.Base
+                                            ? mi.Item.BasePrices.Any(ip =>
+                                                denomination == null || ip.Denomination == denomination)
+                                            : mi.Item.SizePrices.Any(ip =>
+                                                denomination == null || ip.Denomination == denomination)
+                                    )
+                                    .Select(
+                                        ItemMappings.ToItemWithPriceDto(denomination)
+                                    ).ToList(),
                                 DisplayOrder = sg.DisplayOrder,
                                 ParentMenuId = sg.ParentMenuId
                             })

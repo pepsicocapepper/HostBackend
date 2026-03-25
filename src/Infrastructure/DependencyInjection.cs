@@ -28,7 +28,10 @@ public static class DependencyInjection
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.UseNpgsql(connectionString, o =>
-                o.MapEnum<Denomination>("denomination"));
+            {
+                o.MapEnum<Denomination>("denomination");
+                o.MapEnum<PricingModel>("pricing_model");
+            });
         });
 
         builder.Services.AddScoped<IApplicationDbContext>(provider =>

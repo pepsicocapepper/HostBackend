@@ -6,6 +6,7 @@ CREATE TABLE menu
     id            SERIAL PRIMARY KEY,
     name          TEXT NOT NULL UNIQUE,
     pos_name      TEXT,
+    color         BYTEA,
     menu_id       INT,
     display_order INT  NOT NULL,
     FOREIGN KEY (menu_id) REFERENCES menu (id)

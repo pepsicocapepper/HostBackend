@@ -3,6 +3,7 @@ using Application.Common.Models;
 using Application.Items.Dtos;
 using Application.Menus;
 using Application.Menus.Dtos;
+using Domain.Common.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,14 +36,17 @@ public static class Menus
         return TypedResults.Ok(menus);
     }
 
-    private static async Task<Ok<IEnumerable<PosMenuDto>>> GetAllMenus([FromServices] IMenusHandler handler,
-        CancellationToken ct)
+    private static async Task<Ok<IEnumerable<PosMenuDto>>> GetAllMenus(
+        [FromServices] IMenusHandler handler,
+        [FromQuery] string denomination,
+        CancellationToken ct
+    )
     {
-        var menus = await handler.GetAllMenus(ct);
+        var menus = await handler.GetAllMenus(denomination.TryToDenomination(), ct);
         return TypedResults.Ok(menus);
     }
 
-    private static async Task<Ok<int>> CreateItemInMenu([FromBody] CreateItemDto createProductDto,
+    private static async Task<Results<Ok<int>, NotFound>> CreateItemInMenu([FromBody] CreateItemDto createProductDto,
         [FromServices] IMenusHandler handler, CancellationToken ct, string menuId)
     {
         var parsedMenuId = int.Parse(menuId);

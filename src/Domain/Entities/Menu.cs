@@ -6,6 +6,7 @@ public class Menu : BaseEntity<int>
 {
     public required string Name { get; set; }
     public string? PosName { get; set; }
+    public byte[]? Color { get; set; }
     public int DisplayOrder { get; set; }
     public int? ParentMenuId { get; set; }
     public virtual Menu? ParentMenu { get; set; }

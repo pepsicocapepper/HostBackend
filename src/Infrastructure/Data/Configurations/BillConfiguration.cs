@@ -9,7 +9,7 @@ public class BillConfiguration : IEntityTypeConfiguration<Bill>
     public void Configure(EntityTypeBuilder<Bill> builder)
     {
         builder.ToTable("bill");
-        builder.HasKey(c => c.Id).HasName("id");
+        builder.HasKey(c => c.Id).HasName("bill_pkey");
 
         builder.Property(c => c.Id).HasColumnName("id").ValueGeneratedOnAdd();
         builder.Property(c => c.Amount).HasColumnName("amount").IsRequired();

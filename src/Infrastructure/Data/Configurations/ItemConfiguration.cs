@@ -14,6 +14,10 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
         builder.Property(t => t.Name).HasColumnName("name").IsRequired();
+        builder.Property(t => t.PosName).HasColumnName("pos_name");
+        builder.Property(t => t.Color).HasColumnName("color").HasColumnType("bytea");
+        builder.Property(t => t.PricingModel).HasColumnName("pricing_model").HasColumnType("pricing_model")
+            .IsRequired();
         builder.Property(t => t.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(t => t.CreatedBy).HasColumnName("created_by").IsRequired();
         builder.Property(t => t.UpdatedAt).HasColumnName("updated_at");

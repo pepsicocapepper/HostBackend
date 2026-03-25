@@ -44,7 +44,6 @@
       <None Remove="Scripts\20260315130202_eric_CreateOrderTable.sql" />
       <EmbeddedResource Include="Scripts\20260315130202_eric_CreateOrderTable.sql" />
       <None Remove="Scripts\20260315130445_eric_CreateOrderItems.sql" />
-      <EmbeddedResource Include="Scripts\20260315130445_eric_CreateOrderItems.sql" />
       <None Remove="Seeds\20260316162245_eric_SeedMenuItems.sql" />
       <EmbeddedResource Include="Seeds\20260316162245_eric_SeedMenuItems.sql" />
       <None Remove="Seeds\20260316180922_eric_UserPermissions.sql" />
@@ -52,6 +51,26 @@
       <EmbeddedResource Include="Scripts\20260319150228_eric_CreateDenominationEnum.sql" />
       <None Remove="Scripts\20260319150846_eric_CreateItemPriceTable.sql" />
       <EmbeddedResource Include="Scripts\20260319150846_eric_CreateItemPriceTable.sql" />
+      <None Remove="Scripts\20260322191500_eric_CreateModifierGroupTable.sql" />
+      <EmbeddedResource Include="Scripts\20260322191500_eric_CreateModifierGroupTable.sql" />
+      <None Remove="Scripts\20260322191649_eric_CreateModifierElementTable.sql" />
+      <EmbeddedResource Include="Scripts\20260322191649_eric_CreateModifierElementTable.sql" />
+      <None Remove="Scripts\20260322192306_eric_ModifierGroupElement.sql" />
+      <EmbeddedResource Include="Scripts\20260322192306_eric_ModifierGroupElement.sql" />
+      <None Remove="Scripts\20260322192947_eric_CreateItemModifierGroupsTable.sql" />
+      <EmbeddedResource Include="Scripts\20260322192947_eric_CreateItemModifierGroupsTable.sql" />
+      <None Remove="Seeds\20260322210752_eric_SeedModifierElements.sql" />
+      <EmbeddedResource Include="Seeds\20260322210752_eric_SeedModifierElements.sql" />
+      <None Remove="Seeds\20260322210922_eric_SeedModifierGroups.sql" />
+      <EmbeddedResource Include="Seeds\20260322210922_eric_SeedModifierGroups.sql" />
+      <None Remove="Seeds\20260322211005_eric_SeedModifierGroupElements.sql" />
+      <EmbeddedResource Include="Seeds\20260322211005_eric_SeedModifierGroupElements.sql" />
+      <None Remove="Seeds\20260322223011_eric_SeedItemModifierGroups.sql" />
+      <EmbeddedResource Include="Seeds\20260322223011_eric_SeedItemModifierGroups.sql" />
+      <None Remove="Scripts\20260323192910_eric_CreateBillItemModifierTable.sql" />
+      <EmbeddedResource Include="Scripts\20260323192910_eric_CreateBillItemModifierTable.sql" />
+      <None Remove="Scripts\20260323192714_eric_CreateBillItemTable.sql" />
+      <EmbeddedResource Include="Scripts\20260323192714_eric_CreateBillItemTable.sql" />
     </ItemGroup>
 
 </Project>

@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class ItemPriceConfiguration : IEntityTypeConfiguration<ItemPrice>
+public class ItemBasePriceConfiguration : IEntityTypeConfiguration<ItemBasePrice>
 {
-    public void Configure(EntityTypeBuilder<ItemPrice> builder)
+    public void Configure(EntityTypeBuilder<ItemBasePrice> builder)
     {
-        builder.ToTable("item_price");
-        builder.HasKey(t => t.Id).HasName("item_price_pkey");
+        builder.ToTable("item_base_price");
+        builder.HasKey(t => t.Id).HasName("item_base_price_pkey");
 
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
         builder.Property(t => t.Price).HasColumnName("price").IsRequired();
@@ -17,8 +17,8 @@ public class ItemPriceConfiguration : IEntityTypeConfiguration<ItemPrice>
         builder.Property(t => t.ItemId).HasColumnName("item_id").IsRequired();
 
         builder.HasOne(t => t.Item)
-            .WithMany(t => t.Prices)
+            .WithMany(t => t.BasePrices)
             .HasForeignKey(t => t.ItemId)
-            .HasConstraintName("item_price_item_id_fkey");
+            .HasConstraintName("item_base_price_item_id_fkey");
     }
 }

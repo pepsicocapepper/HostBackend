@@ -44,10 +44,20 @@ internal class BillsHandler : IBillsHandler
             CreatedAt = createBillDto.CreatedAt,
             CreatedBy = _userContext.UserId!.Value,
             BillItems = createBillDto.BillItems.Select(x => new BillItem
-            {
-                ItemId = x.ItemId,
-                Quantity = x.Quantity
-            }).ToList()
+                {
+                    ItemId = x.ItemId,
+                    Price = x.Price,
+                    Denomination = x.Denomination,
+                    Quantity = x.Quantity,
+                    BillItemModifiers = x.Modifiers.Select(m => new BillItemModifier
+                        {
+                            ModifierElementId = m.ModifierId,
+                            Price = m.Price,
+                            Denomination = m.Denomination
+                        })
+                        .ToList()
+                })
+                .ToList()
         };
 
         await _dbContext.Bills.AddAsync(bill, cancellationToken);

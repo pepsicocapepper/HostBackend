@@ -9,6 +9,7 @@ public class PosSubgroupDto
     public int Id { get; set; }
     public string Name { get; set; }
     public string? PosName { get; set; }
+    public int? Color { get; set; }
     public int DisplayOrder { get; set; }
     public int? ParentMenuId { get; set; }
     public List<ItemWithPriceDto> Items { get; set; }
