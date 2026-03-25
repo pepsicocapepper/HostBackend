@@ -26,14 +26,13 @@ public class UsersHandler : IUsersHandler
         _mapper = mapper;
     }
 
-    public async Task<UserDto> GetUser(Guid id,CancellationToken cancellationToken)
+    public async Task<UserDto?> GetUser(Guid id,CancellationToken cancellationToken)
     {
-       var user = await _dbContext.Users.FindAsync(id);
+       return await _dbContext.Users
+                        .Where(u=>u.Id==id)
+                        .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync(cancellationToken);
 
-        return new UserDto
-        {
-            
-        };
     }
 
 
@@ -52,8 +51,9 @@ public class UsersHandler : IUsersHandler
             Name = registerUserDto.Name,
             Surname = registerUserDto.Surname,
             Pin = registerUserDto.Pin,
-            Active = registerUserDto.Active,
-            JobTitle = registerUserDto.Job_Title
+            Phone = registerUserDto.Phone,
+            JobTitle = registerUserDto.JobTitle,
+            Active = registerUserDto.Active
         };
 
         await _dbContext.Users.AddAsync(user, cancellationToken);

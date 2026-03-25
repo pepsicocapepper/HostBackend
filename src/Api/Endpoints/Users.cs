@@ -18,6 +18,7 @@ public static class Users
 
         group.MapPost("/", CreateUser).RequireAuthorization();
         group.MapGet("/", GetPaginatedUsers).WithName("GetPaginatedUsers");
+        group.MapGet("/{id}", GetUser).WithName("GetUser");
     }
 
     private static async Task<CreatedAtRoute<Guid>> CreateUser([FromServices] IUsersHandler handler,
@@ -25,7 +26,7 @@ public static class Users
         CancellationToken ct)
     {
         var id = await handler.RegisterUser(dto, ct);
-        return TypedResults.CreatedAtRoute(id, "GetPaginatedUsers", new { });
+        return TypedResults.CreatedAtRoute(id, "GetUser", new { });
     }
 
     private static async Task<Ok<PaginatedData<UserDto>>> GetPaginatedUsers([FromServices] IUsersHandler handler,
@@ -33,6 +34,13 @@ public static class Users
     {
         var users = await handler.GetPaginatedUsers(ct);
         return TypedResults.Ok(users);
+    }
+
+     private static async Task<Results<Ok<UserDto>, NotFound>> 
+     GetUser([FromServices] IUsersHandler handler,CancellationToken ct,Guid id)
+    {
+        var user = await handler.GetUser(id,ct);
+        return  user is null? TypedResults.NotFound():TypedResults.Ok(user);
     }
 
 }
