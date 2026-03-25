@@ -7,7 +7,6 @@ public class ItemDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }
-    public decimal Price { get; set; }
     public Guid CreatedBy { get; set; }
     public User CreatedByUser { get; set; } = null!;
     public DateTime CreatedAt { get; set; }

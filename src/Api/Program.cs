@@ -1,8 +1,10 @@
+using System.Text.Json.Serialization;
 using Api.Endpoints;
 using Api.Services;
 using Application;
 using Application.Common.Interfaces;
 using Infrastructure;
+using Microsoft.AspNetCore.Http.Json;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,10 @@ builder.AddApplication();
 builder.AddInfrastructure();
 builder.Services.AddScoped<ILocation, CurrentLocation>();
 builder.Services.AddOpenApi();
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 

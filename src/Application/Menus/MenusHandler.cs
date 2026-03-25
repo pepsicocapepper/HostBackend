@@ -45,27 +45,44 @@ public class MenusHandler : IMenusHandler
         return _mapper.Map<IEnumerable<MenuDto>>(tree);
     }
 
-    public async Task<IEnumerable<RawMenuDto>> GetAllMenus(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PosMenuDto>> GetAllMenus(CancellationToken cancellationToken = default)
     {
         return await _dbContext
             .Menus
-            .Select(menu => new RawMenuDto
+            .Include(m => m.MenuItems)
+            .Where(m => m.ParentMenuId == null)
+            .Select(menu => new PosMenuDto
                 {
                     Id = menu.Id,
                     Name = menu.Name,
                     PosName = menu.PosName,
-                    ParentMenuId = menu.ParentMenuId,
-                    Items = menu.MenuItems.Select(mi => new ItemDto
-                        {
-                            Id = mi.Item.Id,
-                            Name = mi.Item.Name,
-                            Price = mi.Item.Price,
-                            CreatedAt = mi.Item.CreatedAt,
-                            CreatedBy = mi.Item.CreatedBy,
-                            UpdatedAt = mi.Item.UpdatedAt,
-                            UpdatedBy = mi.Item.UpdatedBy
-                        }
-                    ).ToList()
+                    Subgroups = menu.SubMenus != null
+                        ? menu.SubMenus.Select(sg =>
+                            new PosSubgroupDto
+                            {
+                                Id = sg.Id,
+                                Name = sg.Name,
+                                PosName = sg.PosName,
+                                Items = sg.MenuItems.Select(mi => new ItemWithPriceDto
+                                    {
+                                        Id = mi.Item.Id,
+                                        Name = mi.Item.Name,
+                                        Price = mi.Item.Prices
+                                            .Select(p => new ItemPriceDto
+                                            {
+                                                Price = p.Price,
+                                                Denomination = p.Denomination.ToString()
+                                            }).First(),
+                                        CreatedAt = mi.Item.CreatedAt,
+                                        CreatedBy = mi.Item.CreatedBy,
+                                        UpdatedAt = mi.Item.UpdatedAt,
+                                        UpdatedBy = mi.Item.UpdatedBy
+                                    }
+                                ).ToList(),
+                                DisplayOrder = sg.DisplayOrder,
+                                ParentMenuId = sg.ParentMenuId
+                            })
+                        : null
                 }
             ).ToListAsync(cancellationToken);
     }

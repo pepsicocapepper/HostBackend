@@ -26,6 +26,17 @@ public class UsersHandler : IUsersHandler
         _mapper = mapper;
     }
 
+    public async Task<UserDto> GetUser(Guid id,CancellationToken cancellationToken)
+    {
+       var user = await _dbContext.Users.FindAsync(id);
+
+        return new UserDto
+        {
+            
+        };
+    }
+
+
     public async Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken)
     {
          var users = await _dbContext

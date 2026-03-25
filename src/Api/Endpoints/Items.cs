@@ -1,6 +1,8 @@
 using Application.Common.Models;
 using Application.Items;
 using Application.Items.Dtos;
+using Domain.Common;
+using Domain.Common.Extensions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +35,15 @@ public static class Items
         return TypedResults.Ok(products);
     }
 
-    private static async Task<Ok<IEnumerable<ItemDto>>> GetAllItems([FromServices] IItemsHandler handler,
+    private static async Task<Ok<IEnumerable<ItemWithPriceDto>>> GetAllItems(
+        [FromServices] IItemsHandler handler,
+        [FromQuery] string denomination,
         CancellationToken ct)
     {
-        var items = await handler.GetAllItems(ct);
+        var items = await handler.GetAllItems(
+            denomination.TryToDenomination(),
+            ct
+        );
         return TypedResults.Ok(items);
     }
 }

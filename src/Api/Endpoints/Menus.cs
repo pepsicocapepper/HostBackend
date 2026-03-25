@@ -35,7 +35,7 @@ public static class Menus
         return TypedResults.Ok(menus);
     }
 
-    private static async Task<Ok<IEnumerable<RawMenuDto>>> GetAllMenus([FromServices] IMenusHandler handler,
+    private static async Task<Ok<IEnumerable<PosMenuDto>>> GetAllMenus([FromServices] IMenusHandler handler,
         CancellationToken ct)
     {
         var menus = await handler.GetAllMenus(ct);

@@ -6,6 +6,7 @@ CREATE TABLE host_user
     name       TEXT        NOT NULL,
     surname    TEXT        NOT NULL,
     job_title    TEXT        NOT NULL,
+    phone   TEXT NULL,
     pin        TEXT        NOT NULL UNIQUE,
     active     BOOLEAN       NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()

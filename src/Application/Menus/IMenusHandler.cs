@@ -9,7 +9,7 @@ public interface IMenusHandler
 {
     Task<int> CreateMenu(CreateMenuDto createMenuDto, CancellationToken cancellationToken = default);
     Task<IEnumerable<MenuDto>> GetMenus(CancellationToken cancellationToken = default);
-    Task<IEnumerable<RawMenuDto>> GetAllMenus(CancellationToken cancellationToken = default);
+    Task<IEnumerable<PosMenuDto>> GetAllMenus(CancellationToken cancellationToken = default);
 
     Task<int> CreateItemInMenu(int menuId, CreateItemDto createItemDto,
         CancellationToken cancellationToken = default);

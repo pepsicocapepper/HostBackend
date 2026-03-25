@@ -48,6 +48,10 @@
       <None Remove="Seeds\20260316162245_eric_SeedMenuItems.sql" />
       <EmbeddedResource Include="Seeds\20260316162245_eric_SeedMenuItems.sql" />
       <None Remove="Seeds\20260316180922_eric_UserPermissions.sql" />
+      <None Remove="Scripts\20260319150228_eric_CreateDenominationEnum.sql" />
+      <EmbeddedResource Include="Scripts\20260319150228_eric_CreateDenominationEnum.sql" />
+      <None Remove="Scripts\20260319150846_eric_CreateItemPriceTable.sql" />
+      <EmbeddedResource Include="Scripts\20260319150846_eric_CreateItemPriceTable.sql" />
     </ItemGroup>
 
 </Project>

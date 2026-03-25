@@ -12,8 +12,12 @@ public interface IUsersHandler
 
     Task<TokensDto?> LoginUser(LoginUserDto loginUserDto, string? existingRefreshToken,
         CancellationToken cancellationToken);
+    
 
     Task<TokensDto?> RefreshToken(string refreshToken, CancellationToken cancellationToken);
+
+    Task<UserDto> GetUser(Guid id,CancellationToken cancellationToken);
+    
 
     Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken);
 }

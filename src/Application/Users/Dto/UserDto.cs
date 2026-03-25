@@ -8,6 +8,7 @@ public class UserDto
     public string Name { get; set; }
     public string Surname { get; set; }
     public string Pin { get; set; }
+    public string Phone  { get; set; }
     public string JobTitle  { get; set; }
     public bool Active { get; set; }
     public DateTime CreatedAt { get; set; }

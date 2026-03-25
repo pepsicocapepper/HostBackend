@@ -9,6 +9,7 @@ public class BillDto
     public decimal Amount { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid CreatedBy { get; set; }
+    public User CreatedByUser { get; set; } = null!;
 
     private class BillMapper : Profile
     {

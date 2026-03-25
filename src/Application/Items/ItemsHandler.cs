@@ -4,6 +4,8 @@ using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Items.Dtos;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Domain.Common;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +17,11 @@ public class ItemsHandler : IItemsHandler
     private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
 
-    public ItemsHandler(IApplicationDbContext dbContext, IUserContext userContext)
+    public ItemsHandler(IApplicationDbContext dbContext, IUserContext userContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _userContext = userContext;
+        _mapper = mapper;
     }
 
     public async Task<int> CreateItem(CreateItemDto createItemDto,
@@ -27,8 +30,12 @@ public class ItemsHandler : IItemsHandler
         var product = new Item
         {
             Name = createItemDto.Name,
-            Price = createItemDto.Price,
-            CreatedBy = _userContext.UserId!.Value
+            CreatedBy = _userContext.UserId!.Value,
+            Prices = createItemDto.Prices.Select(ip => new ItemPrice
+            {
+                Price = ip.Price,
+                Denomination = ip.Denomination
+            }).ToList()
         };
 
         await _dbContext.Item.AddAsync(product, cancellationToken);
@@ -44,10 +51,14 @@ public class ItemsHandler : IItemsHandler
         return products;
     }
 
-    public async Task<IEnumerable<ItemDto>> GetAllItems(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ItemWithPriceDto>> GetAllItems(Denomination? denomination,
+        CancellationToken cancellationToken = default)
     {
-        var allItems = await _dbContext
-            .Item.ToListAsync(cancellationToken);
-        return _mapper.Map<IEnumerable<ItemDto>>(allItems);
+        return await _dbContext
+            .Item
+            .Where(i => i.Prices.Any(ip => denomination == null || ip.Denomination == denomination))
+            .Include(i => i.Prices)
+            .ProjectTo<ItemWithPriceDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
     }
 }

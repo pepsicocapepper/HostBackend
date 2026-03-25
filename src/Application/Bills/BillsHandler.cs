@@ -6,6 +6,7 @@ using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Bills;
 
@@ -24,7 +25,8 @@ internal class BillsHandler : IBillsHandler
 
     public async Task<PaginatedData<BillDto>> GetPaginatedBillsAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Bills.ProjectTo<BillDto>(_mapper.ConfigurationProvider, cancellationToken)
+        return await _dbContext.Bills.Include(t => t.CreatedByUser)
+            .ProjectTo<BillDto>(_mapper.ConfigurationProvider, cancellationToken)
             .PaginatedListAsync(1, 10, cancellationToken);
     }
 
@@ -35,7 +37,7 @@ internal class BillsHandler : IBillsHandler
         {
             throw new ArgumentException("User not logged in");
         }
-        
+
         var bill = new Bill
         {
             Amount = createBillDto.Amount,
@@ -47,7 +49,7 @@ internal class BillsHandler : IBillsHandler
                 Quantity = x.Quantity
             }).ToList()
         };
-        
+
         await _dbContext.Bills.AddAsync(bill, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
