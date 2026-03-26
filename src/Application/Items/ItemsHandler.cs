@@ -43,10 +43,11 @@ public class ItemsHandler : IItemsHandler
         return product.Id;
     }
 
-    public Task<PaginatedData<Item>> GetPaginatedItems(CancellationToken cancellationToken = default)
+    public Task<PaginatedData<ItemDto>> GetPaginatedItems(CancellationToken cancellationToken = default)
     {
         var products = _dbContext
             .Item
+            .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(1, 10, cancellationToken);
         return products;
     }

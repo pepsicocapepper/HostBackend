@@ -1,3 +1,4 @@
+using Application.Users.Dtos;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,7 @@ public class BillDto
     public decimal Amount { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid CreatedBy { get; set; }
-    public User CreatedByUser { get; set; } = null!;
+    public MinimalUserDto CreatedByUser { get; set; } = null!;
 
     private class BillMapper : Profile
     {

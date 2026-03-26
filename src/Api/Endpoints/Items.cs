@@ -15,12 +15,13 @@ public static class Items
     {
         var group = app.MapGroup("/items");
 
-        group.MapGet("/", GetPaginatedItems).WithName("GetProducts");
+        group.MapGet("/", GetPaginatedItems).WithName("GetProducts").RequireAuthorization();
         group.MapGet("/all", GetAllItems).WithName("GetAllItems");
         group.MapPost("/", CreateProduct).RequireAuthorization();
     }
 
-    private static async Task<CreatedAtRoute<int>> CreateProduct([FromServices] IItemsHandler handler,
+    private static async Task<CreatedAtRoute<int>> CreateProduct(
+        [FromServices] IItemsHandler handler,
         [FromBody] CreateItemDto dto,
         CancellationToken ct)
     {
@@ -28,7 +29,8 @@ public static class Items
         return TypedResults.CreatedAtRoute(id, "GetProducts", new { });
     }
 
-    private static async Task<Ok<PaginatedData<Item>>> GetPaginatedItems([FromServices] IItemsHandler handler,
+    private static async Task<Ok<PaginatedData<ItemDto>>> GetPaginatedItems(
+        [FromServices] IItemsHandler handler,
         CancellationToken ct)
     {
         var products = await handler.GetPaginatedItems(ct);

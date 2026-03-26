@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Api.Common;
 using Api.Endpoints;
 using Api.Services;
 using Application;
@@ -13,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.AddApplication();
 builder.AddInfrastructure();
+builder.Services.AddProblemDetails();
+builder.Services.AddValidation();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddScoped<ILocation, CurrentLocation>();
 builder.Services.AddOpenApi();
 builder.Services.Configure<JsonOptions>(options =>

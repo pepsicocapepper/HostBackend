@@ -25,7 +25,9 @@ internal class BillsHandler : IBillsHandler
 
     public async Task<PaginatedData<BillDto>> GetPaginatedBillsAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbContext.Bills.Include(t => t.CreatedByUser)
+        return await _dbContext
+            .Bills
+            .Include(t => t.CreatedByUser)
             .ProjectTo<BillDto>(_mapper.ConfigurationProvider, cancellationToken)
             .PaginatedListAsync(1, 10, cancellationToken);
     }
