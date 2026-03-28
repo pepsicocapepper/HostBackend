@@ -21,12 +21,14 @@ public static class Users
         group.MapGet("/{id}", GetUser).WithName("GetUser");
     }
 
-    private static async Task<CreatedAtRoute<Guid>> CreateUser([FromServices] IUsersHandler handler,
+    private static async Task<CreatedAtRoute<UserDto>> CreateUser([FromServices] IUsersHandler handler,
         [FromBody] RegisterUserDto dto,
         CancellationToken ct)
     {
         var id = await handler.RegisterUser(dto, ct);
-        return TypedResults.CreatedAtRoute(id, "GetUser", new { });
+        var response = await handler.GetUser(id,ct);  
+        return TypedResults.CreatedAtRoute(response,"GetUser",new{id});
+        
     }
 
     private static async Task<Ok<PaginatedData<UserDto>>> GetPaginatedUsers([FromServices] IUsersHandler handler,
