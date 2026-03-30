@@ -19,6 +19,8 @@ public static class Users
         group.MapPost("/", CreateUser).RequireAuthorization();
         group.MapGet("/", GetPaginatedUsers).WithName("GetPaginatedUsers");
         group.MapGet("/{id}", GetUser).WithName("GetUser");
+        group.MapPut("/{id}",EditUser);
+        group.MapDelete("/{id}",DeleteUser);
     }
 
     private static async Task<CreatedAtRoute<UserDto>> CreateUser([FromServices] IUsersHandler handler,
@@ -45,4 +47,17 @@ public static class Users
         return  user is null? TypedResults.NotFound():TypedResults.Ok(user);
     }
 
+    private static async Task<Results<Ok<UserDto?>, NotFound>> 
+    EditUser([FromServices] IUsersHandler handler,Guid id,UserDto userDto,CancellationToken ct)
+    {
+        var user = await handler.EditUser(id,userDto,ct);
+        return  user is null? TypedResults.NotFound():TypedResults.Ok(user)!;
+    }
+
+    private static async Task<Results<Ok, InternalServerError>>  
+    DeleteUser([FromServices] IUsersHandler handler, Guid id,CancellationToken ct)
+    {   
+        var delUser = await handler.DeleteUser(id,ct);
+        return  delUser? TypedResults.Ok():TypedResults.InternalServerError();
+    }
 }
