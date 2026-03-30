@@ -10,6 +10,7 @@ using Application.Common.Mappings;
 using Application.Users.Dto;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Application.Users;
 
@@ -35,6 +36,43 @@ public class UsersHandler : IUsersHandler
 
     }
 
+    public async Task<bool> DeleteUser(Guid id,CancellationToken cancellationToken)
+    {
+        try
+        {   
+            await _dbContext.Users.Where(user=>user.Id==id)
+                                .ExecuteDeleteAsync(cancellationToken);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<UserDto?> EditUser(Guid id,UserDto userDto,CancellationToken cancellationToken)
+    {
+        var user = await _dbContext.Users
+                        .Where(u=>u.Id==id)
+                        .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync(cancellationToken);
+                    
+        if (user is null)
+        {
+            return null;
+        }
+
+        user.Name=userDto.Name;
+        user.Surname=userDto.Surname;
+        user.Pin=userDto.Pin;
+        user.Phone=userDto.Phone;
+        user.JobTitle=userDto.JobTitle;
+        user.Active=userDto.Active;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return userDto;
+    }
 
     public async Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken)
     {

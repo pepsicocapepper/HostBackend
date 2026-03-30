@@ -1,3 +1,4 @@
+using System.Data.SqlTypes;
 using Application.Common.Dtos;
 using Application.Common.Models;
 using Application.Users.Commands.LoginUser;
@@ -15,9 +16,12 @@ public interface IUsersHandler
     
 
     Task<TokensDto?> RefreshToken(string refreshToken, CancellationToken cancellationToken);
+    Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken);
 
     Task<UserDto> GetUser(Guid id,CancellationToken cancellationToken);
-    
 
-    Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken);
+    Task<UserDto?> EditUser(Guid id,UserDto userDto,CancellationToken cancellationToken);
+    
+    Task<bool> DeleteUser(Guid id,CancellationToken cancellationToken);
+    
 }
