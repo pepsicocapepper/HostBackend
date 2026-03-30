@@ -20,7 +20,7 @@ public interface IUsersHandler
 
     Task<UserDto> GetUser(Guid id,CancellationToken cancellationToken);
 
-    Task<UserDto?> EditUser(Guid id,UserDto userDto,CancellationToken cancellationToken);
+    Task<EditUserDto?> EditUser(Guid id,EditUserDto userDto,CancellationToken cancellationToken);
     
     Task<bool> DeleteUser(Guid id,CancellationToken cancellationToken);
     

@@ -50,11 +50,10 @@ public class UsersHandler : IUsersHandler
         }
     }
 
-    public async Task<UserDto?> EditUser(Guid id,UserDto userDto,CancellationToken cancellationToken)
+    public async Task<EditUserDto?> EditUser(Guid id,EditUserDto editUserDto,CancellationToken cancellationToken)
     {
         var user = await _dbContext.Users
                         .Where(u=>u.Id==id)
-                        .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
                         .FirstOrDefaultAsync(cancellationToken);
                     
         if (user is null)
@@ -62,16 +61,17 @@ public class UsersHandler : IUsersHandler
             return null;
         }
 
-        user.Name=userDto.Name;
-        user.Surname=userDto.Surname;
-        user.Pin=userDto.Pin;
-        user.Phone=userDto.Phone;
-        user.JobTitle=userDto.JobTitle;
-        user.Active=userDto.Active;
+        user.Name=editUserDto.Name;
+        user.Surname=editUserDto.Surname;
+        user.Pin=editUserDto.Pin;
+        user.Phone=editUserDto.Phone;
+        user.JobTitle=editUserDto.JobTitle;
+        user.Active=editUserDto.Active;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return userDto;
+
+        return editUserDto;
     }
 
     public async Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken)

@@ -47,8 +47,8 @@ public static class Users
         return  user is null? TypedResults.NotFound():TypedResults.Ok(user);
     }
 
-    private static async Task<Results<Ok<UserDto?>, NotFound>> 
-    EditUser([FromServices] IUsersHandler handler,Guid id,UserDto userDto,CancellationToken ct)
+    private static async Task<Results<Ok<EditUserDto?>, NotFound>> 
+    EditUser([FromServices] IUsersHandler handler,Guid id,EditUserDto userDto,CancellationToken ct)
     {
         var user = await handler.EditUser(id,userDto,ct);
         return  user is null? TypedResults.NotFound():TypedResults.Ok(user)!;
