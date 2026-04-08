@@ -7,6 +7,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Common;
 using Domain.Entities;
+using ErrorOr;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Items;
@@ -16,21 +18,37 @@ public class ItemsHandler : IItemsHandler
     private readonly IApplicationDbContext _dbContext;
     private readonly IUserContext _userContext;
     private readonly IMapper _mapper;
+    private readonly IValidator<CreateItemDto> _createItemDtoValidator;
 
-    public ItemsHandler(IApplicationDbContext dbContext, IUserContext userContext, IMapper mapper)
+    public ItemsHandler(IApplicationDbContext dbContext, IUserContext userContext, IMapper mapper,
+        IValidator<CreateItemDto> validator)
     {
         _dbContext = dbContext;
         _userContext = userContext;
         _mapper = mapper;
+        _createItemDtoValidator = validator;
     }
 
-    public async Task<int> CreateItem(CreateItemDto createItemDto,
+    public async Task<ErrorOr<int>> CreateItem(CreateItemDto createItemDto,
         CancellationToken cancellationToken = default)
     {
-        var product = new Item
+        var validationResult = _createItemDtoValidator.Validate(createItemDto);
+
+        if (!validationResult.IsValid)
+        {
+            return Error.Validation(ItemErrorCodes.ValidationError);
+        }
+
+        var item = new Item
         {
             Name = createItemDto.Name,
+            PosName = createItemDto.PosName,
+            Plu = createItemDto.Plu,
+            Sku = createItemDto.Sku,
+            Description = createItemDto.Description,
+            PricingModel = createItemDto.PricingModel,
             CreatedBy = _userContext.UserId!.Value,
+            CreatedAt = DateTime.UtcNow,
             BasePrices = createItemDto.Prices.Select(ip => new ItemBasePrice
             {
                 Price = ip.Price,
@@ -38,15 +56,16 @@ public class ItemsHandler : IItemsHandler
             }).ToList()
         };
 
-        await _dbContext.Item.AddAsync(product, cancellationToken);
+        await _dbContext.Item.AddAsync(item, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return product.Id;
+        return item.Id;
     }
 
     public Task<PaginatedData<ItemDto>> GetPaginatedItems(CancellationToken cancellationToken = default)
     {
         var products = _dbContext
             .Item
+            .Where(i => i.IsActive)
             .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(1, 10, cancellationToken);
         return products;
@@ -57,9 +76,36 @@ public class ItemsHandler : IItemsHandler
     {
         return await _dbContext
             .Item
-            .Where(i => i.BasePrices.Any(ip => denomination == null || ip.Denomination == denomination))
+            .Where(i => i.BasePrices.Any(ip => denomination == null || ip.Denomination == denomination) && i.IsActive)
             .Include(i => i.BasePrices)
             .ProjectTo<ItemWithPriceDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<ItemIngredientDto>> GetAllIngredients(int itemId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext
+            .ItemIngredients
+            .Where(i => i.ItemId == itemId).Select(i => new ItemIngredientDto
+            {
+                Name = i.Ingredient.Name,
+                Quantity = i.Quantity
+            })
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task DeleteItem(int itemId, CancellationToken cancellationToken = default)
+    {
+        var item = await _dbContext
+            .Item
+            .FindAsync(itemId, cancellationToken);
+
+        if (item is not null)
+        {
+            item.IsActive = false;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
     }
 }

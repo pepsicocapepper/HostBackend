@@ -1,9 +1,8 @@
+using Api.Common.Extensions;
 using Application.Common.Models;
 using Application.Items;
 using Application.Items.Dtos;
-using Domain.Common;
 using Domain.Common.Extensions;
-using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,22 +10,39 @@ namespace Api.Endpoints;
 
 public static class Items
 {
+    const string PaginatedItems = "PaginatedItems";
+    const string AllItems = "AllItems";
+
     public static void MapProducts(this WebApplication app)
     {
         var group = app.MapGroup("/items");
 
-        group.MapGet("/", GetPaginatedItems).WithName("GetProducts").RequireAuthorization();
-        group.MapGet("/all", GetAllItems).WithName("GetAllItems");
+        group.MapGet("/", GetPaginatedItems).WithName(PaginatedItems).RequireAuthorization();
+        group.MapGet("/all", GetAllItems).WithName(AllItems);
         group.MapPost("/", CreateProduct).RequireAuthorization();
+        group.MapDelete("/{itemId:int}", DeleteItem).RequireAuthorization();
+        group.MapGet("/{itemId:int}/ingredients", GetIngredients).RequireAuthorization();
     }
 
-    private static async Task<CreatedAtRoute<int>> CreateProduct(
+    private static async Task<Ok<IEnumerable<ItemIngredientDto>>> GetIngredients(int itemId,
+        [FromServices] IItemsHandler handler,
+        CancellationToken ct)
+    {
+        return TypedResults.Ok(await handler.GetAllIngredients(itemId, ct));
+    }
+
+    private static async Task<Results<CreatedAtRoute<int>, BadRequest<ProblemDetails>>> CreateProduct(
         [FromServices] IItemsHandler handler,
         [FromBody] CreateItemDto dto,
         CancellationToken ct)
     {
-        var id = await handler.CreateItem(dto, ct);
-        return TypedResults.CreatedAtRoute(id, "GetProducts", new { });
+        var result = await handler.CreateItem(dto, ct);
+        if (result.IsError)
+        {
+            return TypedResults.BadRequest(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.CreatedAtRoute(result.Value, PaginatedItems, new { });
     }
 
     private static async Task<Ok<PaginatedData<ItemDto>>> GetPaginatedItems(
@@ -47,5 +63,15 @@ public static class Items
             ct
         );
         return TypedResults.Ok(items);
+    }
+
+    private static async Task<Ok> DeleteItem(
+        int itemId,
+        [FromServices] IItemsHandler handler,
+        CancellationToken ct
+    )
+    {
+        await handler.DeleteItem(itemId, ct);
+        return TypedResults.Ok();
     }
 }

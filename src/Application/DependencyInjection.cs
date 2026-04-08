@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using Application.Bills;
+using Application.Ingredients;
 using Application.Items;
 using Application.Menus;
+using Application.Providers;
 using Application.Users;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,11 +15,13 @@ public static class DependencyInjection
 {
     public static void AddApplication(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly(), includeInternalTypes: true);
         builder.Services.AddAutoMapper(cfg => { cfg.AddMaps(Assembly.GetExecutingAssembly()); });
         builder.Services.AddScoped<IUsersHandler, UsersHandler>();
         builder.Services.AddScoped<IItemsHandler, ItemsHandler>();
         builder.Services.AddScoped<IMenusHandler, MenusHandler>();
         builder.Services.AddScoped<IBillsHandler, BillsHandler>();
+        builder.Services.AddScoped<IIngredientsHandler, IngredientsHandler>();
+        builder.Services.AddScoped<IProvidersHandler, ProvidersHandler>();
     }
 }

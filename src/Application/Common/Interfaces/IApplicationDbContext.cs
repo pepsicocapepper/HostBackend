@@ -12,5 +12,9 @@ public interface IApplicationDbContext
     DbSet<MenuItem> MenuItems { get; }
     DbSet<Bill> Bills { get; }
     DbSet<BillItem> BillItems { get; }
+    DbSet<ItemIngredient> ItemIngredients { get; }
+    DbSet<Ingredient> Ingredients { get; }
+    DbSet<Provider> Providers { get; }
+    DbSet<IngredientProvider> IngredientProviders { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -19,6 +19,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<MenuItem> MenuItems => Set<MenuItem>();
     public DbSet<Bill> Bills => Set<Bill>();
     public DbSet<BillItem> BillItems => Set<BillItem>();
+    public DbSet<ItemIngredient> ItemIngredients => Set<ItemIngredient>();
+    public DbSet<Ingredient> Ingredients => Set<Ingredient>();
+    public DbSet<Provider> Providers => Set<Provider>();
+    public DbSet<IngredientProvider> IngredientProviders => Set<IngredientProvider>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

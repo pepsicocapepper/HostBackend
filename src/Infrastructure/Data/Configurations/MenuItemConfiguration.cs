@@ -25,6 +25,6 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .WithMany() 
             .HasForeignKey(mi => mi.ItemId)
             .HasConstraintName("menu_item_item_id_fkey")
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

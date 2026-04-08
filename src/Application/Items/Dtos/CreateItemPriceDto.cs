@@ -2,4 +2,4 @@ using Domain.Common;
 
 namespace Application.Items.Dtos;
 
-public record CreateItemPriceDto(ulong Price, Denomination Denomination, short NegativeExponent);
+public record CreateItemPriceDto(decimal Price, Denomination Denomination);

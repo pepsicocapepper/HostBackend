@@ -28,6 +28,7 @@ internal class BillsHandler : IBillsHandler
         return await _dbContext
             .Bills
             .Include(t => t.CreatedByUser)
+            .AsNoTracking()
             .ProjectTo<BillDto>(_mapper.ConfigurationProvider, cancellationToken)
             .PaginatedListAsync(1, 10, cancellationToken);
     }

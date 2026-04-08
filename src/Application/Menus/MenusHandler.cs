@@ -1,5 +1,4 @@
 using System.Buffers.Binary;
-using System.Runtime.InteropServices;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
@@ -11,6 +10,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Common;
 using Domain.Entities;
+using ErrorOr;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Menus;
@@ -20,22 +21,40 @@ public class MenusHandler : IMenusHandler
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IItemsHandler _productsHandler;
+    private readonly IValidator<CreateMenuDto> _createMenuValidator;
 
-    public MenusHandler(IApplicationDbContext dbContext, IMapper mapper, IItemsHandler productsHandler)
+    public MenusHandler(IApplicationDbContext dbContext, IMapper mapper, IItemsHandler productsHandler,
+        IValidator<CreateMenuDto> createMenuValidator)
     {
         _dbContext = dbContext;
         _mapper = mapper;
         _productsHandler = productsHandler;
+        _createMenuValidator = createMenuValidator;
     }
 
-    public async Task<int> CreateMenu(CreateMenuDto createMenuDto, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<int>> CreateMenu(CreateMenuDto createMenuDto,
+        CancellationToken cancellationToken = default)
     {
+        var validationResult = _createMenuValidator.Validate(createMenuDto);
+
+        if (!validationResult.IsValid)
+        {
+            return Error.Validation(MenuErrorCodes.ValidationError, "ValidationError");
+        }
+
         var menu = new Menu
         {
             Name = createMenuDto.Name,
             PosName = createMenuDto.PosName,
             ParentMenuId = createMenuDto.ParentId
         };
+
+        var exists = _dbContext.Menus.Any(m => m.Name == menu.Name);
+        if (exists)
+        {
+            return Error.Conflict(MenuErrorCodes.AlreadyExists,
+                description: $"Menu {menu.Name} already exists");
+        }
 
         await _dbContext.Menus.AddAsync(menu, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -55,6 +74,7 @@ public class MenusHandler : IMenusHandler
         return await _dbContext
             .Menus
             .Include(m => m.MenuItems)
+            .AsNoTracking()
             .Where(m => m.ParentMenuId == null)
             .Select(menu => new PosMenuDto
                 {
@@ -94,20 +114,26 @@ public class MenusHandler : IMenusHandler
             ).ToListAsync(cancellationToken);
     }
 
-    public async Task<int> CreateItemInMenu(int menuId, CreateItemDto createItemDto,
+    public async Task<ErrorOr<int>> CreateItemInMenu(
+        int menuId,
+        CreateItemDto createItemDto,
         CancellationToken cancellationToken = default)
     {
         var productId = await _productsHandler.CreateItem(createItemDto, cancellationToken);
+        if (productId.IsError)
+        {
+            return productId.Errors;
+        }
 
         var menuExists = await _dbContext.Menus.AnyAsync(m => m.Id == menuId, cancellationToken);
         if (!menuExists)
         {
-            throw new ApplicationException($"Menu with id {menuId} not found");
+            return Error.NotFound(MenuErrorCodes.NotFound);
         }
 
         await _dbContext.MenuItems.AddAsync(new MenuItem
         {
-            ItemId = productId,
+            ItemId = productId.Value,
             MenuId = menuId,
         }, cancellationToken);
 
@@ -117,7 +143,10 @@ public class MenusHandler : IMenusHandler
 
     public async Task<PaginatedData<ItemDto>> GetItemsInMenu(int menuId, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.MenuItems.Where(mi => mi.MenuId == menuId).Select(mi => mi.Item)
+        return await _dbContext
+            .MenuItems
+            .Where(mi => mi.MenuId == menuId)
+            .Select(mi => mi.Item)
             .ProjectTo<ItemDto>(_mapper.ConfigurationProvider, cancellationToken)
             .PaginatedListAsync(1, 10, cancellationToken: cancellationToken);
     }

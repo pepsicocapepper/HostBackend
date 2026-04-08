@@ -22,14 +22,22 @@ public static class Menus
         group.MapPost("/{menuId}/items", CreateItemInMenu).RequireAuthorization();
     }
 
-    private static async Task<Created<int>> CreateMenu([FromBody] CreateMenuDto createMenuDto,
-        [FromServices] IMenusHandler handler, CancellationToken ct)
+    private static async Task<Results<Created<int>, BadRequest<ProblemDetails>>> CreateMenu(
+        [FromBody] CreateMenuDto createMenuDto,
+        [FromServices] IMenusHandler handler,
+        CancellationToken ct)
     {
         var result = await handler.CreateMenu(createMenuDto, ct);
-        return TypedResults.Created("/menus", result);
+        if (result.IsError)
+        {
+            return TypedResults.BadRequest(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Created("/menus", result.Value);
     }
 
-    private static async Task<Ok<IEnumerable<MenuDto>>> GetMenus([FromServices] IMenusHandler handler,
+    private static async Task<Ok<IEnumerable<MenuDto>>> GetMenus(
+        [FromServices] IMenusHandler handler,
         CancellationToken ct)
     {
         var menus = await handler.GetMenus(ct);
@@ -46,12 +54,19 @@ public static class Menus
         return TypedResults.Ok(menus);
     }
 
-    private static async Task<Results<Ok<int>, NotFound>> CreateItemInMenu([FromBody] CreateItemDto createProductDto,
-        [FromServices] IMenusHandler handler, CancellationToken ct, string menuId)
+    private static async Task<Results<Ok<int>, BadRequest<ProblemDetails>>> CreateItemInMenu(
+        [FromBody] CreateItemDto createProductDto,
+        [FromServices] IMenusHandler handler,
+        CancellationToken ct, string menuId)
     {
         var parsedMenuId = int.Parse(menuId);
         var result = await handler.CreateItemInMenu(parsedMenuId, createProductDto, ct);
-        return TypedResults.Ok(result);
+        if (result.IsError)
+        {
+            return TypedResults.BadRequest(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(result.Value);
     }
 
     private static async Task<Ok<PaginatedData<ItemDto>>> GetItemsInMenu([FromServices] IMenusHandler handler,

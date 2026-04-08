@@ -71,6 +71,14 @@
       <EmbeddedResource Include="Scripts\20260323192910_eric_CreateBillItemModifierTable.sql" />
       <None Remove="Scripts\20260323192714_eric_CreateBillItemTable.sql" />
       <EmbeddedResource Include="Scripts\20260323192714_eric_CreateBillItemTable.sql" />
+      <None Remove="Scripts\20260407152534_eric_CreateIngredientTable.sql" />
+      <EmbeddedResource Include="Scripts\20260407152534_eric_CreateIngredientTable.sql" />
+      <None Remove="Scripts\20260407152733_eric_CreateProviderTable.sql" />
+      <EmbeddedResource Include="Scripts\20260407152733_eric_CreateProviderTable.sql" />
+      <None Remove="Scripts\20260407154046_eric_CreateProviderItemTable.sql" />
+      <EmbeddedResource Include="Scripts\20260407154046_eric_CreateProviderItemTable.sql" />
+      <None Remove="Scripts\20260407155155_eric_CreateItemIngredientTable.sql" />
+      <EmbeddedResource Include="Scripts\20260407155155_eric_CreateItemIngredientTable.sql" />
     </ItemGroup>
 
 </Project>

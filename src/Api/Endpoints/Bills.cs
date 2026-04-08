@@ -28,8 +28,7 @@ public static class Bills
     private static async Task<Created> CreateBill(
         [FromServices] IBillsHandler handler,
         [FromBody] CreateBillDto dto,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         await handler.CreateBill(dto, cancellationToken);
         return TypedResults.Created();

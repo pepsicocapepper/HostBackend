@@ -4,6 +4,8 @@ using Application.Common.Interfaces;
 using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
 using Domain.Entities;
+using ErrorOr;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Users;
@@ -12,15 +14,26 @@ public class UsersHandler : IUsersHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly ITokenProvider _tokenProvider;
+    private readonly IValidator<RegisterUserDto> _registerUserValidator;
 
-    public UsersHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider)
+    public UsersHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider,
+        IValidator<RegisterUserDto> registerUserValidator)
     {
         _dbContext = dbContext;
         _tokenProvider = tokenProvider;
+        _registerUserValidator = registerUserValidator;
     }
 
-    public async Task<Guid> RegisterUser(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Guid>> RegisterUser(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
     {
+        var validationResult = _registerUserValidator.Validate(registerUserDto);
+
+        if (!validationResult.IsValid)
+        {
+            return Error.Validation("BadRegisterUserDto", "Error",
+                validationResult.Errors.ToDictionary(x => x.PropertyName, object (x) => x.ErrorMessage));
+        }
+
         var user = new User
         {
             Name = registerUserDto.Name,
