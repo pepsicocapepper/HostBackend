@@ -39,5 +39,6 @@ app.MapAuth();
 app.MapProducts();
 app.MapBills();
 app.MapProviders();
+app.MapIngredients();
 
 app.Run();
