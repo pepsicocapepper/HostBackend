@@ -56,6 +56,18 @@ public class ProvidersHandler : IProvidersHandler
             .PaginatedListAsync(1, 10, cancellationToken);
     }
 
+    public async Task<ErrorOr<ProviderDto>> GetProviderById(Guid id, CancellationToken cancellationToken = default)
+    {
+        var provider = await _dbContext.Providers.FindAsync(id, cancellationToken);
+
+        if (provider is null)
+        {
+            return Error.NotFound(ProviderErrorCodes.NotFound);
+        }
+
+        return _mapper.Map<ProviderDto>(provider);
+    }
+
     public async Task<ErrorOr<bool>> AddIngredient(CreateIngredientProviderDto dto,
         CancellationToken cancellationToken = default)
     {

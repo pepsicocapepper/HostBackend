@@ -15,6 +15,7 @@ public static class Providers
     {
         var group = app.MapGroup("/providers");
         group.MapGet("/", GetPaginatedProviders).RequireAuthorization().WithName(PaginatedProviders);
+        group.MapGet("/{id}", GetProviderById).RequireAuthorization();
         group.MapPost("/", CreateProvider).RequireAuthorization();
         group.MapPost("/{providerId}/ingredients/${ingredientId:int}", AddIngredient).RequireAuthorization();
     }
@@ -24,6 +25,19 @@ public static class Providers
     {
         var result = await handler.GetPaginatedProviders(ct);
         return TypedResults.Ok(result);
+    }
+
+    private static async Task<Results<Ok<ProviderDto>, NotFound<ProblemDetails>>> GetProviderById(
+        string id, [FromServices] IProvidersHandler handler, CancellationToken ct)
+    {
+        var result = await handler.GetProviderById(new Guid(id), ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(result.Value);
     }
 
     private static async Task<Results<CreatedAtRoute<Guid>, BadRequest<ProblemDetails>>> CreateProvider(
