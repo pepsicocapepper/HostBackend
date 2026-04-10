@@ -1,5 +1,6 @@
 using Api.Common.Extensions;
 using Application.Common.Models;
+using Application.Ingredients.Dtos;
 using Application.Providers;
 using Application.Providers.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -16,14 +17,19 @@ public static class Providers
         var group = app.MapGroup("/providers");
         group.MapGet("/", GetPaginatedProviders).RequireAuthorization().WithName(PaginatedProviders);
         group.MapGet("/{id}", GetProviderById).RequireAuthorization();
+        group.MapGet("/{providerId:guid}/ingredients", GetPaginatedProviderIngredients).RequireAuthorization();
         group.MapPost("/", CreateProvider).RequireAuthorization();
-        group.MapPost("/{providerId}/ingredients/${ingredientId:int}", AddIngredient).RequireAuthorization();
+        group.MapPost("/{providerId:guid}/ingredients/${ingredientId:int}", AddIngredient).RequireAuthorization();
     }
 
     private static async Task<Ok<PaginatedData<ProviderDto>>> GetPaginatedProviders(
-        [FromServices] IProvidersHandler handler, CancellationToken ct)
+        int? pageSize,
+        int? pageNumber,
+        [FromServices] IProvidersHandler handler,
+        CancellationToken ct
+    )
     {
-        var result = await handler.GetPaginatedProviders(ct);
+        var result = await handler.GetPaginatedProviders(new PaginationQuery(pageNumber, pageSize), ct);
         return TypedResults.Ok(result);
     }
 
@@ -38,6 +44,19 @@ public static class Providers
         }
 
         return TypedResults.Ok(result.Value);
+    }
+
+    private static async Task<Ok<PaginatedData<IngredientProviderDto>>> GetPaginatedProviderIngredients(
+        int? pageSize,
+        int? pageNumber,
+        Guid providerId,
+        [FromServices] IProvidersHandler handler,
+        CancellationToken ct
+    )
+    {
+        var result =
+            await handler.GetPaginatedProviderIngredients(new PaginationQuery(pageNumber, pageSize), providerId, ct);
+        return TypedResults.Ok(result);
     }
 
     private static async Task<Results<CreatedAtRoute<Guid>, BadRequest<ProblemDetails>>> CreateProvider(

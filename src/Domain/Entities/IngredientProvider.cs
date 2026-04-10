@@ -8,4 +8,5 @@ public class IngredientProvider
     public Provider Provider { get; set; } = null!;
     public int IngredientId { get; set; }
     public Ingredient Ingredient { get; set; } = null!;
+    public decimal Price { get; set; }
 }

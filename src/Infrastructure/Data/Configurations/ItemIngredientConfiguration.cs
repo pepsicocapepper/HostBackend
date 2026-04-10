@@ -16,12 +16,12 @@ public class ItemIngredientConfiguration : IEntityTypeConfiguration<ItemIngredie
         builder.Property(t => t.Quantity).HasColumnName("quantity").IsRequired();
 
         builder.HasOne(t => t.Ingredient)
-            .WithMany()
+            .WithMany(t => t.RecipeIngredients)
             .HasForeignKey(t => t.IngredientId)
             .HasConstraintName("item_ingredient_ingredient_id_fkey");
 
         builder.HasOne(t => t.Item)
-            .WithMany()
+            .WithMany(t => t.ItemIngredients)
             .HasForeignKey(t => t.ItemId)
             .HasConstraintName("item_ingredient_item_id_fkey");
     }

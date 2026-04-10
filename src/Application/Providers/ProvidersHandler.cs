@@ -1,12 +1,14 @@
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
+using Application.Ingredients.Dtos;
 using Application.Providers.Dtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using ErrorOr;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Providers;
 
@@ -48,12 +50,13 @@ public class ProvidersHandler : IProvidersHandler
         return provider.Id;
     }
 
-    public async Task<PaginatedData<ProviderDto>> GetPaginatedProviders(CancellationToken cancellationToken = default)
+    public async Task<PaginatedData<ProviderDto>> GetPaginatedProviders(PaginationQuery query,
+        CancellationToken cancellationToken = default)
     {
         return await _dbContext
             .Providers
             .ProjectTo<ProviderDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(1, 10, cancellationToken);
+            .PaginatedListAsync(query, cancellationToken);
     }
 
     public async Task<ErrorOr<ProviderDto>> GetProviderById(Guid id, CancellationToken cancellationToken = default)
@@ -66,6 +69,20 @@ public class ProvidersHandler : IProvidersHandler
         }
 
         return _mapper.Map<ProviderDto>(provider);
+    }
+
+    public async Task<PaginatedData<IngredientProviderDto>> GetPaginatedProviderIngredients(
+        PaginationQuery query,
+        Guid providerId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        return await _dbContext
+            .IngredientProviders
+            .Where(t => t.ProviderId == providerId)
+            .Include(t => t.Ingredient)
+            .ProjectTo<IngredientProviderDto>(_mapper.ConfigurationProvider)
+            .PaginatedListAsync(query, cancellationToken);
     }
 
     public async Task<ErrorOr<bool>> AddIngredient(CreateIngredientProviderDto dto,

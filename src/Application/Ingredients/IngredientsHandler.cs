@@ -49,6 +49,18 @@ internal class IngredientsHandler : IIngredientsHandler
 
         await _dbContext.Ingredients.AddAsync(ingredient, cancellationToken);
 
+        if (dto.ProviderIds.Count > 0)
+        {
+            foreach (var provider in dto.ProviderIds)
+            {
+                await _dbContext.IngredientProviders.AddAsync(new IngredientProvider
+                {
+                    Ingredient = ingredient,
+                    ProviderId = provider,
+                }, cancellationToken);
+            }
+        }
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
         return ingredient.Id;
     }
