@@ -38,7 +38,8 @@ public class UsersHandler : IUsersHandler
         {
             Name = registerUserDto.Name,
             Surname = registerUserDto.Surname,
-            Pin = registerUserDto.Pin
+            Pin = registerUserDto.Pin,
+            BranchId = registerUserDto.BranchId
         };
 
         await _dbContext.Users.AddAsync(user, cancellationToken);

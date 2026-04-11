@@ -10,7 +10,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.ToTable("host_user");
         builder.HasKey(t => t.Id).HasName("host_user_pkey");
-        
+
         builder.HasIndex(t => t.Pin).IsUnique().HasDatabaseName("host_user_pin_key");
 
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
@@ -18,5 +18,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(t => t.Surname).HasColumnName("surname").IsRequired();
         builder.Property(t => t.Pin).HasColumnName("pin").IsRequired();
         builder.Property(t => t.CreatedAt).HasColumnName("created_at");
+        builder.Property(t => t.BranchId).HasColumnName("branch_id").IsRequired();
+
+        builder.HasOne(t => t.Branch)
+            .WithMany(t => t.Users)
+            .HasForeignKey(t => t.BranchId)
+            .HasConstraintName("host_user_branch_id_fkey");
     }
 }

@@ -11,7 +11,7 @@ public class IngredientConfiguration : IEntityTypeConfiguration<Ingredient>
         builder.ToTable("ingredient");
         builder.HasKey(t => t.Id).HasName("ingredient_pkey");
 
-        builder.Property(t => t.Id).HasColumnName("id");
+        builder.Property(t => t.Id).HasColumnName("id").ValueGeneratedOnAdd();
         builder.Property(t => t.Name).HasColumnName("name").IsRequired();
     }
 }

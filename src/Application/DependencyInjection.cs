@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application.Bills;
+using Application.Branches;
 using Application.Ingredients;
 using Application.Items;
 using Application.Menus;
@@ -23,5 +24,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<IBillsHandler, BillsHandler>();
         builder.Services.AddScoped<IIngredientsHandler, IngredientsHandler>();
         builder.Services.AddScoped<IProvidersHandler, ProvidersHandler>();
+        builder.Services.AddScoped<IBranchesHandler, BranchesHandler>();
     }
 }

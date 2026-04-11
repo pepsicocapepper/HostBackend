@@ -7,6 +7,7 @@ public sealed class MinimalUserDto
 {
     public required string Name { get; set; }
     public required string Surname { get; set; }
+    public required Guid BranchId { get; set; }
 
     private class MinimalUserProfile : Profile
     {
