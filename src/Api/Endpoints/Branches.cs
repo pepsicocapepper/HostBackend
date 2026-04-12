@@ -2,6 +2,7 @@ using Api.Common.Extensions;
 using Application.Branches;
 using Application.Branches.Dtos;
 using Application.Common.Models;
+using Application.Users.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,8 @@ public static class Branches
     {
         var group = app.MapGroup("/branches");
         group.MapGet("/", GetPaginatedBranches).RequireAuthorization();
+        group.MapGet("/{id:guid}", GetBranchById).RequireAuthorization();
+        group.MapGet("/{branchId:guid}/users", GetPaginatedBranchUsers).RequireAuthorization();
         group.MapPost("/", CreateBranch).RequireAuthorization();
     }
 
@@ -21,6 +24,36 @@ public static class Branches
     {
         var result = await handler.GetPaginatedBranches(new PaginationQuery(pageNumber, pageSize), ct);
         return TypedResults.Ok(result);
+    }
+
+    private static async Task<Results<Ok<BranchDto>, NotFound<ProblemDetails>>> GetBranchById(
+        Guid id,
+        [FromServices] IBranchesHandler handler,
+        CancellationToken ct)
+    {
+        var result = await handler.GetBranchById(id, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(result.Value);
+    }
+
+    private static async Task<Results<Ok<PaginatedData<MinimalUserDto>>, NotFound<ProblemDetails>>>
+        GetPaginatedBranchUsers(int? pageNumber, int? pageSize, Guid branchId,
+            [FromServices] IBranchesHandler handler, CancellationToken ct
+        )
+    {
+        var result = await handler.GetPaginatedBranchUsers(new PaginationQuery(pageNumber, pageSize), branchId, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(result.Value);
     }
 
     private static async Task<Results<Created, BadRequest<ProblemDetails>>> CreateBranch(

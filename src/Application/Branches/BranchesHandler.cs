@@ -2,6 +2,7 @@ using Application.Branches.Dtos;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
+using Application.Users.Dtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
@@ -29,7 +30,42 @@ internal class BranchesHandler : IBranchesHandler
             .PaginatedListAsync(paginationQuery, cancellationToken);
     }
 
-    public async Task<ErrorOr<Guid>> CreateBranch(CreateBranchDto branchDto, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<BranchDto>> GetBranchById(Guid id, CancellationToken cancellationToken = default)
+    {
+        var branch = await _dbContext
+            .Branches
+            .FindAsync([id], cancellationToken);
+
+        if (branch == null)
+        {
+            return Error.NotFound(BranchErrorCodes.NotFound);
+        }
+
+        return _mapper.Map<BranchDto>(branch);
+    }
+
+    public async Task<ErrorOr<PaginatedData<MinimalUserDto>>> GetPaginatedBranchUsers(PaginationQuery paginationQuery,
+        Guid branchId,
+        CancellationToken cancellationToken = default)
+    {
+        var branch = await _dbContext
+            .Branches
+            .FindAsync([branchId], cancellationToken);
+
+        if (branch == null)
+        {
+            return Error.NotFound(BranchErrorCodes.NotFound);
+        }
+
+        return await _dbContext
+            .Users
+            .Where(u => u.BranchId == branch.Id)
+            .ProjectTo<MinimalUserDto>(_mapper.ConfigurationProvider)
+            .PaginatedListAsync(paginationQuery, cancellationToken);
+    }
+
+    public async Task<ErrorOr<Guid>> CreateBranch(CreateBranchDto branchDto,
+        CancellationToken cancellationToken = default)
     {
         var branch = new Branch
         {
@@ -43,7 +79,7 @@ internal class BranchesHandler : IBranchesHandler
 
         await _dbContext.Branches.AddAsync(branch, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
+
         return branch.Id;
     }
 }

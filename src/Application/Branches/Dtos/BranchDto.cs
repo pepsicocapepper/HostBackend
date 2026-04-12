@@ -5,6 +5,7 @@ namespace Application.Branches.Dtos;
 
 public class BranchDto
 {
+    public Guid Id { get; set; }
     public string AddressLine1 { get; set; } = null!;
     public string? AddressLine2 { get; set; }
     public string? ZipCode { get; set; }
