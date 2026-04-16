@@ -81,6 +81,8 @@
       <EmbeddedResource Include="Scripts\20260407155155_eric_CreateItemIngredientTable.sql" />
       <None Remove="Scripts\20260410184349_eric_CreateLocationTable.sql" />
       <EmbeddedResource Include="Scripts\20260410184349_eric_CreateLocationTable.sql" />
+      <None Remove="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql" />
+      <EmbeddedResource Include="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql" />
     </ItemGroup>
 
 </Project>

@@ -2,11 +2,13 @@ using Application.Branches.Dtos;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
+using Application.Ingredients.Dtos;
 using Application.Users.Dtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using ErrorOr;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Branches;
 
@@ -48,19 +50,121 @@ internal class BranchesHandler : IBranchesHandler
         Guid branchId,
         CancellationToken cancellationToken = default)
     {
-        var branch = await _dbContext
+        var branchExists = await _dbContext
             .Branches
-            .FindAsync([branchId], cancellationToken);
+            .AnyAsync(b => b.Id == branchId, cancellationToken);
 
-        if (branch == null)
+        if (!branchExists)
         {
             return Error.NotFound(BranchErrorCodes.NotFound);
         }
 
         return await _dbContext
             .Users
-            .Where(u => u.BranchId == branch.Id)
+            .Where(u => u.BranchId == branchId)
             .ProjectTo<MinimalUserDto>(_mapper.ConfigurationProvider)
+            .PaginatedListAsync(paginationQuery, cancellationToken);
+    }
+
+    public async Task<ErrorOr<PaginatedData<BranchIngredientDto>>> GetPaginatedBranchIngredients(
+        PaginationQuery paginationQuery,
+        Guid branchId,
+        CancellationToken cancellationToken = default)
+    {
+        var branchExists = await _dbContext
+            .Branches
+            .AnyAsync(b => b.Id == branchId, cancellationToken);
+
+        if (!branchExists)
+        {
+            return Error.NotFound(BranchErrorCodes.NotFound);
+        }
+
+        return await _dbContext
+            .BranchIngredients
+            .Where(u => u.BranchId == branchId)
+            .ProjectTo<BranchIngredientDto>(_mapper.ConfigurationProvider)
+            .PaginatedListAsync(paginationQuery, cancellationToken);
+    }
+
+    public async Task<ErrorOr<int>> ModifyInventory(Guid branchId, ModifyInventoryDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        var branchExists = await _dbContext
+            .Branches
+            .AnyAsync(b => b.Id == branchId, cancellationToken);
+
+        if (!branchExists)
+        {
+            return Error.NotFound(BranchErrorCodes.NotFound);
+        }
+
+        var ingredientIds = dto.Ingredients.Select(i => i.Id).ToList();
+
+        var existingInventoryItems = await _dbContext.BranchIngredients
+            .Where(b => b.BranchId == branchId && ingredientIds.Contains(b.IngredientId))
+            .ToListAsync(cancellationToken);
+
+        if (existingInventoryItems.Count != ingredientIds.Count)
+        {
+            return Error.Conflict(BranchErrorCodes.InvalidIngredients);
+        }
+
+        foreach (var dtoIngredient in dto.Ingredients)
+        {
+            var inventoryItem = existingInventoryItems
+                .First(e => e.IngredientId == dtoIngredient.Id);
+
+            inventoryItem.Quantity = dtoIngredient.Quantity;
+        }
+
+        var rowsAffected = await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return rowsAffected;
+    }
+
+    public async Task<ErrorOr<int>> AddIngredientToBranch(Guid branchId, AddIngredientDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        var branchExists = await _dbContext
+            .Branches
+            .AnyAsync(b => b.Id == branchId, cancellationToken);
+
+        if (!branchExists)
+        {
+            return Error.NotFound(BranchErrorCodes.NotFound);
+        }
+
+        await _dbContext.BranchIngredients.AddAsync(new BranchIngredient
+        {
+            IngredientId = dto.Id,
+            BranchId = branchId,
+            Quantity = dto.Quantity,
+            Unit = dto.Unit
+        }, cancellationToken);
+
+        var rowsAffected = await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return rowsAffected;
+    }
+
+    public async Task<ErrorOr<PaginatedData<IngredientDto>>> GetPaginatedIngredientsNotInBranch(
+        PaginationQuery paginationQuery, Guid branchId,
+        CancellationToken cancellationToken = default)
+    {
+        var branchExists = await _dbContext
+            .Branches
+            .AnyAsync(b => b.Id == branchId, cancellationToken);
+
+        if (!branchExists)
+        {
+            return Error.NotFound(BranchErrorCodes.NotFound);
+        }
+
+        return await _dbContext
+            .Ingredients
+            .Where(t => !_dbContext.BranchIngredients.Any(bi => bi.IngredientId == t.Id && bi.BranchId == branchId))
+            .ProjectTo<IngredientDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(paginationQuery, cancellationToken);
     }
 

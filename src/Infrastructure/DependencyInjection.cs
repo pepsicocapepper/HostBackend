@@ -1,13 +1,15 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 using Application.Common;
 using Application.Common.Abstractions;
 using Application.Common.Interfaces;
 using Domain.Common;
 using Infrastructure.Authentication;
 using Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
+using Intuit.Ipp.Core;
+using Intuit.Ipp.OAuth2PlatformClient;
+using Intuit.Ipp.Security;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -40,6 +42,20 @@ public static class DependencyInjection
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IUserContext, UserContext>();
         builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+        builder.Services.AddSingleton<IQbApi>(_ =>
+        {
+            string? clientId = Environment.GetEnvironmentVariable("QB_CLIENT_ID");
+            string? clientSecret = Environment.GetEnvironmentVariable("QB_CLIENT_SECRET");
+            string? refreshToken = Environment.GetEnvironmentVariable("QB_REFRESH_TOKEN");
+            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) ||
+                string.IsNullOrEmpty(refreshToken))
+                throw new ArgumentNullException(nameof(clientId));
+
+            OAuth2Client client =
+                new OAuth2Client(clientId, clientSecret, "http://localhost:8080/scalar/v1", "sandbox");
+
+            return new QbApi(client, refreshToken);
+        });
 
         builder.Services.AddAuthentication()
             .AddJwtBearer(o =>

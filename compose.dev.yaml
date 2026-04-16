@@ -8,6 +8,10 @@
       - host-network
     environment:
       HOST_DB_CONNECTION: "Server=host.db;Port=5432;Database=host;User Id=postgres;Password=postgres;"
+      QB_CLIENT_ID: ${QB_CLIENT_ID}
+      QB_CLIENT_SECRET: ${QB_CLIENT_SECRET} 
+      QB_REFRESH_TOKEN: ${QB_REFRESH_TOKEN}
+      QB_REALM_ID: ${QB_REALM_ID}
     build:
       context: .
       dockerfile: src/Api/Dockerfile

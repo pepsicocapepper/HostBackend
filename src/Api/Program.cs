@@ -41,5 +41,6 @@ app.MapBills();
 app.MapProviders();
 app.MapIngredients();
 app.MapBranches();
+app.MapIntuit();
 
 app.Run();
