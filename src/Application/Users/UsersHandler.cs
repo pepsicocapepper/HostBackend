@@ -72,6 +72,7 @@ public class UsersHandler : IUsersHandler
         user.Phone=editUserDto.Phone;
         user.JobTitle=editUserDto.JobTitle;
         user.Active=editUserDto.Active;
+        user.BranchId=editUserDto.BranchId;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 

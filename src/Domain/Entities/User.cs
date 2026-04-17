@@ -9,7 +9,7 @@ public class User : BaseEntity<Guid>
     public required string Pin { get; set; }
     public required string JobTitle  { get; set; }
     public string? Phone  { get; set; }
-    public bool Active { get; set; }
+    public bool? Active { get; set; }
     public DateTime CreatedAt { get; set; }
     public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
     public IEnumerable<Item>? CreatedItems { get; set; }
