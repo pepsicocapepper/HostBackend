@@ -83,6 +83,12 @@
       <EmbeddedResource Include="Scripts\20260410184349_eric_CreateLocationTable.sql" />
       <None Remove="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql" />
       <EmbeddedResource Include="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql" />
+      <None Remove="Scripts\20260416173441_eric_CreateRecipeTable.sql" />
+      <EmbeddedResource Include="Scripts\20260416173441_eric_CreateRecipeTable.sql" />
+      <None Remove="Scripts\20260416173824_eric_CreateRecipeIngredientsTable.sql" />
+      <EmbeddedResource Include="Scripts\20260416173824_eric_CreateRecipeIngredientsTable.sql" />
+      <None Remove="Scripts\20260416174308_eric_CreateItemRecipeTable.sql" />
+      <EmbeddedResource Include="Scripts\20260416174308_eric_CreateItemRecipeTable.sql" />
     </ItemGroup>
 
 </Project>

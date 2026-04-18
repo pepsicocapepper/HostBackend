@@ -43,5 +43,10 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
             .WithOne(t => t.Item)
             .HasForeignKey(t => t.ItemId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(t => t.ItemRecipes)
+            .WithOne(t => t.Item)
+            .HasForeignKey(t => t.ItemId)
+            .HasConstraintName("item_recipe_item_id_fkey");
     }
 }

@@ -5,6 +5,7 @@ using Application.Ingredients;
 using Application.Items;
 using Application.Menus;
 using Application.Providers;
+using Application.Recipes;
 using Application.Users;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,5 +26,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<IIngredientsHandler, IngredientsHandler>();
         builder.Services.AddScoped<IProvidersHandler, ProvidersHandler>();
         builder.Services.AddScoped<IBranchesHandler, BranchesHandler>();
+        builder.Services.AddScoped<IRecipesHandler, RecipesHandler>();
     }
 }

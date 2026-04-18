@@ -22,4 +22,5 @@ public class Item : BaseEntity<int>
     public ICollection<ItemSizePrice> SizePrices { get; set; } = [];
     public ICollection<ItemModifierGroup> ItemModifierGroups { get; set; } = [];
     public ICollection<ItemIngredient> ItemIngredients { get; set; } = [];
+    public ICollection<ItemRecipe> ItemRecipes { get; set; } = [];
 }
