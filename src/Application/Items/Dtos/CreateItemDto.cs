@@ -9,5 +9,6 @@ public record CreateItemDto(
     string? Sku,
     string? Description,
     PricingModel PricingModel,
-    List<CreateItemPriceDto> Prices
+    List<CreateItemPriceDto> Prices,
+    List<Guid> RecipeIds
 );

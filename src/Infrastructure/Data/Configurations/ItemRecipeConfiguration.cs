@@ -13,5 +13,10 @@ public class ItemRecipeConfiguration : IEntityTypeConfiguration<ItemRecipe>
 
         builder.Property(p => p.ItemId).HasColumnName("item_id");
         builder.Property(p => p.RecipeId).HasColumnName("recipe_id");
+
+        builder.HasOne(t => t.Item)
+            .WithMany(t => t.ItemRecipes)
+            .HasForeignKey(t => t.ItemId)
+            .HasConstraintName("item_recipe_item_id_fkey");
     }
 }

@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Items.Dtos;
+using Application.Recipes.Dtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Common;
@@ -53,29 +54,50 @@ public class ItemsHandler : IItemsHandler
             {
                 Price = ip.Price,
                 Denomination = ip.Denomination
+            }).ToList(),
+            ItemRecipes = createItemDto.RecipeIds.Select(id => new ItemRecipe
+            {
+                RecipeId = id
             }).ToList()
         };
 
-        await _dbContext.Item.AddAsync(item, cancellationToken);
+        await _dbContext.Items.AddAsync(item, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return item.Id;
     }
 
-    public Task<PaginatedData<ItemDto>> GetPaginatedItems(CancellationToken cancellationToken = default)
+    public async Task<PaginatedData<ItemDto>> GetPaginatedItems(PaginationQuery query,
+        CancellationToken cancellationToken = default)
     {
-        var products = _dbContext
-            .Item
+        return await _dbContext
+            .Items
             .Where(i => i.IsActive)
             .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(1, 10, cancellationToken);
-        return products;
+            .PaginatedListAsync(query, cancellationToken);
+    }
+
+    public async Task<ErrorOr<PaginatedData<RecipeDto>>> GetPaginatedRecipesNotInItem(PaginationQuery query, int itemId,
+        CancellationToken cancellationToken = default)
+    {
+        var itemExists = await _dbContext.Items.AnyAsync(i => i.Id == itemId, cancellationToken);
+
+        if (!itemExists)
+        {
+            return Error.NotFound(ItemErrorCodes.NotFound);
+        }
+
+        return await _dbContext
+            .Recipes
+            .Where(t => !_dbContext.ItemRecipes.Any(ri => ri.ItemId == itemId && ri.RecipeId == t.Id))
+            .ProjectTo<RecipeDto>(_mapper.ConfigurationProvider)
+            .PaginatedListAsync(query, cancellationToken);
     }
 
     public async Task<IEnumerable<ItemWithPriceDto>> GetAllItems(Denomination? denomination,
         CancellationToken cancellationToken = default)
     {
         return await _dbContext
-            .Item
+            .Items
             .Where(i => i.BasePrices.Any(ip => denomination == null || ip.Denomination == denomination) && i.IsActive)
             .Include(i => i.BasePrices)
             .ProjectTo<ItemWithPriceDto>(_mapper.ConfigurationProvider)
@@ -98,8 +120,8 @@ public class ItemsHandler : IItemsHandler
     public async Task DeleteItem(int itemId, CancellationToken cancellationToken = default)
     {
         var item = await _dbContext
-            .Item
-            .FindAsync(itemId, cancellationToken);
+            .Items
+            .FindAsync([itemId], cancellationToken);
 
         if (item is not null)
         {

@@ -7,7 +7,7 @@ public interface IApplicationDbContext
 {
     DbSet<User> Users { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
-    DbSet<Item> Item { get; }
+    DbSet<Item> Items { get; }
     DbSet<Menu> Menus { get; }
     DbSet<MenuItem> MenuItems { get; }
     DbSet<Bill> Bills { get; }

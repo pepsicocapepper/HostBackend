@@ -12,7 +12,7 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
         builder.HasKey(t => t.Id).HasName("item_pkey");
         builder.HasAlternateKey(t => t.Name).HasName("item_name_key");
 
-        builder.Property(t => t.Id).HasColumnName("id").IsRequired();
+        builder.Property(t => t.Id).HasColumnName("id").ValueGeneratedOnAdd();
         builder.Property(t => t.Name).HasColumnName("name").IsRequired();
         builder.Property(t => t.PosName).HasColumnName("pos_name");
         builder.Property(t => t.Plu).HasColumnName("plu");
@@ -44,9 +44,6 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
             .HasForeignKey(t => t.ItemId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(t => t.ItemRecipes)
-            .WithOne(t => t.Item)
-            .HasForeignKey(t => t.ItemId)
-            .HasConstraintName("item_recipe_item_id_fkey");
+        
     }
 }

@@ -2,6 +2,7 @@ using Api.Common.Extensions;
 using Application.Common.Models;
 using Application.Items;
 using Application.Items.Dtos;
+using Application.Recipes.Dtos;
 using Domain.Common.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ public static class Items
         group.MapPost("/", CreateProduct).RequireAuthorization();
         group.MapDelete("/{itemId:int}", DeleteItem).RequireAuthorization();
         group.MapGet("/{itemId:int}/ingredients", GetIngredients).RequireAuthorization();
+        group.MapGet("/{itemId:int}/available-recipes", GetPaginatedRecipesNotInItem).RequireAuthorization();
     }
 
     private static async Task<Ok<IEnumerable<ItemIngredientDto>>> GetIngredients(int itemId,
@@ -45,11 +47,10 @@ public static class Items
         return TypedResults.CreatedAtRoute(result.Value, PaginatedItems, new { });
     }
 
-    private static async Task<Ok<PaginatedData<ItemDto>>> GetPaginatedItems(
-        [FromServices] IItemsHandler handler,
-        CancellationToken ct)
+    private static async Task<Ok<PaginatedData<ItemDto>>> GetPaginatedItems(int? pageNumber, int? pageSize,
+        [FromServices] IItemsHandler handler, CancellationToken ct)
     {
-        var products = await handler.GetPaginatedItems(ct);
+        var products = await handler.GetPaginatedItems(new PaginationQuery(pageNumber, pageSize), ct);
         return TypedResults.Ok(products);
     }
 
@@ -63,6 +64,20 @@ public static class Items
             ct
         );
         return TypedResults.Ok(items);
+    }
+
+    private static async Task<Results<Ok<PaginatedData<RecipeDto>>, NotFound<ProblemDetails>>>
+        GetPaginatedRecipesNotInItem(int? pageNumber, int? pageSize, int itemId, [FromServices] IItemsHandler handler,
+            CancellationToken ct)
+    {
+        var result = await handler.GetPaginatedRecipesNotInItem(new PaginationQuery(pageNumber, pageSize), itemId, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(result.Value);
     }
 
     private static async Task<Ok> DeleteItem(
