@@ -24,6 +24,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Provider> Providers => Set<Provider>();
     public DbSet<IngredientProvider> IngredientProviders => Set<IngredientProvider>();
     public DbSet<Branch> Branches => Set<Branch>();
+    public DbSet<BranchIngredient> BranchIngredients => Set<BranchIngredient>();
+    public DbSet<Recipe> Recipes => Set<Recipe>();
+    public DbSet<RecipeIngredient> RecipeIngredients => Set<RecipeIngredient>();
+    public DbSet<ItemRecipe> ItemRecipes => Set<ItemRecipe>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
