@@ -9,8 +9,6 @@ namespace Api.Endpoints;
 
 public static class Ingredients
 {
-    const string PaginatedIngredients = "PaginatedIngredients";
-
     public static void MapIngredients(this WebApplication app)
     {
         var group = app.MapGroup("/ingredients");
@@ -24,7 +22,7 @@ public static class Ingredients
         return TypedResults.Ok(await handler.GetPaginatedIngredients(ct));
     }
 
-    private static async Task<Results<CreatedAtRoute<int>, BadRequest<ProblemDetails>>> CreateIngredient(
+    private static async Task<Results<Created, BadRequest<ProblemDetails>>> CreateIngredient(
         [FromBody] CreateIngredientDto dto,
         [FromServices] IIngredientsHandler handler, CancellationToken ct)
     {
@@ -35,6 +33,6 @@ public static class Ingredients
             return TypedResults.BadRequest(result.FirstError.ToProblemDetails());
         }
 
-        return TypedResults.CreatedAtRoute(result.Value, PaginatedIngredients, new { });
+        return TypedResults.Created();
     }
 }
