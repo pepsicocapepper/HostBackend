@@ -45,8 +45,13 @@ public class UsersHandler : IUsersHandler
     {
         try
         {   
-            await _dbContext.Users.Where(user=>user.Id==id)
-                                .ExecuteDeleteAsync(cancellationToken);
+
+            var user = await _dbContext.Users
+                .Where(u=>u.Id==id)
+                .FirstOrDefaultAsync(cancellationToken);
+            user!.Active=false;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
             return true;
         }
         catch
