@@ -1,6 +1,6 @@
 using Api.Common.Extensions;
-using Application.Common.Interfaces;
-using Application.Common.Models;
+using Application.Intuit;
+using Application.Intuit.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,13 +12,13 @@ public static class Intuit
     {
         var group = app.MapGroup("/intuit");
         group.MapGet("/auth", GetAuthorizationUrl);
-        group.MapGet("/invoices", GetPaginatedInvoices);
+        group.MapPost("/auth", ExchangeAuthCode).RequireAuthorization();
     }
 
     private static async Task<Results<Ok<string>, BadRequest<ProblemDetails>>> GetAuthorizationUrl(
-        [FromServices] IQbApi qbApi)
+        [FromServices] IQbHandler handler)
     {
-        var result = await qbApi.GetAuthUrl();
+        var result = await handler.GetAuthUrl();
 
         if (result.IsError)
         {
@@ -28,10 +28,16 @@ public static class Intuit
         return TypedResults.Ok(result.Value);
     }
 
-    private static async Task<Ok<IReadOnlyCollection<object>>> GetPaginatedInvoices([FromServices] IQbApi qbApi,
-        CancellationToken ct)
+    private static async Task<Results<Created, BadRequest<ProblemDetails>>> ExchangeAuthCode(ExchangeAuthCodeDto dto,
+        [FromServices] IQbHandler handler, CancellationToken ct)
     {
-        var result = await qbApi.GetPaginatedInvoices(new PaginationQuery(1, 10), ct);
-        return TypedResults.Ok(result);
+        var result = await handler.ExchangeAuthCode(dto.Code, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.BadRequest(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Created();
     }
 }

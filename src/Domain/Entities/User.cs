@@ -16,4 +16,5 @@ public class User : BaseEntity<Guid>
     public required Guid BranchId { get; set; }
     public Branch Branch { get; set; } = null!;
     public ICollection<BranchInventoryHistory> BranchInventoryHistory { get; set; } = [];
+    public UserQuickbooksCredential? QuickbooksCredentials { get; set; }
 }

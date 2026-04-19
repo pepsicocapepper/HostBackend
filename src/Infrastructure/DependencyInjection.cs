@@ -43,19 +43,19 @@ public static class DependencyInjection
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IUserContext, UserContext>();
         builder.Services.AddScoped<ITokenProvider, TokenProvider>();
-        builder.Services.AddSingleton<IQbApi>(_ =>
+        builder.Services.AddScoped<IQbApi>(_ =>
         {
             string? clientId = Environment.GetEnvironmentVariable("QB_CLIENT_ID");
             string? clientSecret = Environment.GetEnvironmentVariable("QB_CLIENT_SECRET");
-            string? refreshToken = Environment.GetEnvironmentVariable("QB_REFRESH_TOKEN");
-            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) ||
-                string.IsNullOrEmpty(refreshToken))
+            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+            {
                 throw new ArgumentNullException(nameof(clientId));
+            }
 
             OAuth2Client client =
-                new OAuth2Client(clientId, clientSecret, "http://localhost:8080/scalar/v1", "sandbox");
+                new OAuth2Client(clientId, clientSecret, "http://localhost:5173/admin/intuit-redirect", "sandbox");
 
-            return new QbApi(client, refreshToken);
+            return new QbApi(client);
         });
 
         builder.Services.AddAuthentication()

@@ -91,6 +91,8 @@
         <EmbeddedResource Include="Scripts\20260416174308_eric_CreateItemRecipeTable.sql"/>
         <None Remove="Scripts\20260418171702_eric_CreateBranchInventoryHistoryTable.sql"/>
         <EmbeddedResource Include="Scripts\20260418171702_eric_CreateBranchInventoryHistoryTable.sql"/>
+        <None Remove="Scripts\20260418220854_eric_CreateTableUserQuickbooksCredentialsTable.sql" />
+        <EmbeddedResource Include="Scripts\20260418220854_eric_CreateTableUserQuickbooksCredentialsTable.sql" />
     </ItemGroup>
 
 </Project>

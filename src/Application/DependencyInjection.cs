@@ -2,6 +2,7 @@
 using Application.Bills;
 using Application.Branches;
 using Application.Ingredients;
+using Application.Intuit;
 using Application.Items;
 using Application.Menus;
 using Application.Providers;
@@ -27,5 +28,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<IProvidersHandler, ProvidersHandler>();
         builder.Services.AddScoped<IBranchesHandler, BranchesHandler>();
         builder.Services.AddScoped<IRecipesHandler, RecipesHandler>();
+        builder.Services.AddScoped<IQbHandler, QbHandler>();
     }
 }
