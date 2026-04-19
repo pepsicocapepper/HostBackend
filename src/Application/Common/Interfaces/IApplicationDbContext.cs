@@ -21,5 +21,6 @@ public interface IApplicationDbContext
     DbSet<Recipe> Recipes { get; }
     DbSet<RecipeIngredient> RecipeIngredients { get; }
     DbSet<ItemRecipe> ItemRecipes { get; }
+    DbSet<BranchInventoryHistory> BranchInventoryHistories { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

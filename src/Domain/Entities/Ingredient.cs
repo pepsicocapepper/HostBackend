@@ -8,4 +8,5 @@ public class Ingredient : BaseEntity<int>
     public ICollection<IngredientProvider> ProviderIngredients { get; set; } = [];
     public ICollection<ItemIngredient> RecipeIngredients { get; set; } = [];
     public ICollection<BranchIngredient> BranchIngredients { get; set; } = [];
+    public ICollection<BranchInventoryHistory> BranchIngredientHistory { get; set; } = [];
 }

@@ -33,6 +33,7 @@ public static class DependencyInjection
             {
                 o.MapEnum<Denomination>("denomination");
                 o.MapEnum<PricingModel>("pricing_model");
+                o.MapEnum<BranchInventoryAction>("branch_inventory_action");
             });
         });
 

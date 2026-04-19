@@ -15,4 +15,5 @@ public class User : BaseEntity<Guid>
     public IEnumerable<Bill>? Bills { get; set; }
     public required Guid BranchId { get; set; }
     public Branch Branch { get; set; } = null!;
+    public ICollection<BranchInventoryHistory> BranchInventoryHistory { get; set; } = [];
 }

@@ -12,4 +12,5 @@ public class Branch : BaseEntity<Guid>
     public required string Country { get; set; }
     public ICollection<User> Users { get; set; } = [];
     public ICollection<BranchIngredient> BranchIngredients { get; set; } = [];
+    public ICollection<BranchInventoryHistory> InventoryHistory { get; set; } = [];
 }

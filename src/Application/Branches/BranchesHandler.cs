@@ -1,4 +1,5 @@
 using Application.Branches.Dtos;
+using Application.Common.Abstractions;
 using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
@@ -16,11 +17,13 @@ internal class BranchesHandler : IBranchesHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
+    private readonly IUserContext _userContext;
 
-    public BranchesHandler(IApplicationDbContext dbContext, IMapper mapper)
+    public BranchesHandler(IApplicationDbContext dbContext, IMapper mapper, IUserContext userContext)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+        _userContext = userContext;
     }
 
     public async Task<PaginatedData<BranchDto>> GetPaginatedBranches(PaginationQuery paginationQuery,
@@ -114,6 +117,20 @@ internal class BranchesHandler : IBranchesHandler
         {
             var inventoryItem = existingInventoryItems
                 .First(e => e.IngredientId == dtoIngredient.Id);
+
+            var branchInventoryHistory = new BranchInventoryHistory
+            {
+                PreviousQuantity = inventoryItem.Quantity,
+                NewQuantity = dtoIngredient.Quantity,
+                Action = dtoIngredient.Action,
+                IngredientId = inventoryItem.IngredientId,
+                BranchId = branchId,
+                UserId = _userContext.UserId!.Value
+            };
+
+            await _dbContext
+                .BranchInventoryHistories
+                .AddAsync(branchInventoryHistory, cancellationToken);
 
             inventoryItem.Quantity = dtoIngredient.Quantity;
         }

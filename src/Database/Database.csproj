@@ -9,86 +9,88 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="dbup-postgresql" Version="6.1.5" />
+        <PackageReference Include="dbup-postgresql" Version="6.1.5"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Scripts\20260222215950_eric_CreateOrdersTable.sql" />
-      <None Remove="Scripts\20260222224454_eric_AddDoneColumn.sql" />
-      <None Remove="Scripts\20260223004631_eric_AddUsersTable.sql" />
-      <EmbeddedResource Include="Permissions\20260316180922_eric_UserPermissions.sql" />
-      <EmbeddedResource Include="Scripts\20260223004631_eric_AddUsersTable.sql" />
-      <None Remove="Scripts\20260223222146_eric_AddUserIdColumn.sql" />
-      <None Remove="Scripts\20260228143421_eric_AddRefreshTokens.sql" />
-      <None Remove="Scripts\20260228145722_eric_RemakeRefreshTokensTable.sql" />
-      <None Remove="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql" />
-      <EmbeddedResource Include="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql" />
-      <None Remove="Scripts\20260303212150_eric_CreateProductsTable.sql" />
-      <EmbeddedResource Include="Scripts\20260303212150_eric_CreateProductsTable.sql" />
-      <None Remove="Scripts\20260305093922_eric_CreateMenuTable.sql" />
-      <EmbeddedResource Include="Scripts\20260305093922_eric_CreateMenuTable.sql" />
-      <None Remove="Scripts\20260305095811_eric_CreateMenuItemsTable.sql" />
-      <EmbeddedResource Include="Scripts\20260305095811_eric_CreateMenuItemsTable.sql" />
-      <None Remove="Seeds\20260305121949_eric_SeedUsers.sql" />
-      <EmbeddedResource Include="Seeds\20260305121949_eric_SeedUsers.sql" />
-      <None Remove="Seeds\20260305122047_eric_AddMenus.sql" />
-      <EmbeddedResource Include="Seeds\20260305122047_eric_AddMenus.sql" />
-      <None Remove="Seeds\20260306124122_eric_SeedItems.sql" />
-      <EmbeddedResource Include="Seeds\20260306124122_eric_SeedItems.sql" />
-      <None Remove="Scripts\20260315130202_eric_CreateOrderTable.sql" />
-      <EmbeddedResource Include="Scripts\20260315130202_eric_CreateOrderTable.sql" />
-      <None Remove="Scripts\20260315130445_eric_CreateOrderItems.sql" />
-      <None Remove="Seeds\20260316162245_eric_SeedMenuItems.sql" />
-      <EmbeddedResource Include="Seeds\20260316162245_eric_SeedMenuItems.sql" />
-      <None Remove="Seeds\20260316180922_eric_UserPermissions.sql" />
-      <None Remove="Scripts\20260319150228_eric_CreateDenominationEnum.sql" />
-      <EmbeddedResource Include="Scripts\20260319150228_eric_CreateDenominationEnum.sql" />
-      <None Remove="Scripts\20260319150846_eric_CreateItemPriceTable.sql" />
-      <EmbeddedResource Include="Scripts\20260319150846_eric_CreateItemPriceTable.sql" />
-      <None Remove="Scripts\20260322191500_eric_CreateModifierGroupTable.sql" />
-      <EmbeddedResource Include="Scripts\20260322191500_eric_CreateModifierGroupTable.sql" />
-      <None Remove="Scripts\20260322191649_eric_CreateModifierElementTable.sql" />
-      <EmbeddedResource Include="Scripts\20260322191649_eric_CreateModifierElementTable.sql" />
-      <None Remove="Scripts\20260322192306_eric_ModifierGroupElement.sql" />
-      <EmbeddedResource Include="Scripts\20260322192306_eric_ModifierGroupElement.sql" />
-      <None Remove="Scripts\20260322192947_eric_CreateItemModifierGroupsTable.sql" />
-      <EmbeddedResource Include="Scripts\20260322192947_eric_CreateItemModifierGroupsTable.sql" />
-      <None Remove="Seeds\20260322210752_eric_SeedModifierElements.sql" />
-      <EmbeddedResource Include="Seeds\20260322210752_eric_SeedModifierElements.sql" />
-      <None Remove="Seeds\20260322210922_eric_SeedModifierGroups.sql" />
-      <EmbeddedResource Include="Seeds\20260322210922_eric_SeedModifierGroups.sql" />
-      <None Remove="Seeds\20260322211005_eric_SeedModifierGroupElements.sql" />
-      <EmbeddedResource Include="Seeds\20260322211005_eric_SeedModifierGroupElements.sql" />
-      <None Remove="Seeds\20260322223011_eric_SeedItemModifierGroups.sql" />
-      <EmbeddedResource Include="Seeds\20260322223011_eric_SeedItemModifierGroups.sql" />
-      <None Remove="Scripts\20260323192910_eric_CreateBillItemModifierTable.sql" />
-      <EmbeddedResource Include="Scripts\20260323192910_eric_CreateBillItemModifierTable.sql" />
-      <None Remove="Scripts\20260323192714_eric_CreateBillItemTable.sql" />
-      <EmbeddedResource Include="Scripts\20260323192714_eric_CreateBillItemTable.sql" />
-      <None Remove="Scripts\20260407152534_eric_CreateIngredientTable.sql" />
-      <EmbeddedResource Include="Scripts\20260407152534_eric_CreateIngredientTable.sql" />
-      <None Remove="Scripts\20260407152733_eric_CreateProviderTable.sql" />
-      <EmbeddedResource Include="Scripts\20260407152733_eric_CreateProviderTable.sql" />
-      <None Remove="Scripts\20260407154046_eric_CreateProviderItemTable.sql" />
-      <EmbeddedResource Include="Scripts\20260407154046_eric_CreateProviderItemTable.sql" />
-      <None Remove="Scripts\20260407155155_eric_CreateItemIngredientTable.sql" />
-      <EmbeddedResource Include="Scripts\20260407155155_eric_CreateItemIngredientTable.sql" />
-      <None Remove="Scripts\20260410184349_eric_CreateLocationTable.sql" />
-      <EmbeddedResource Include="Scripts\20260410184349_eric_CreateLocationTable.sql" />
-      <None Remove="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql" />
-      <EmbeddedResource Include="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql" />
-      <None Remove="Scripts\20260416173441_eric_CreateRecipeTable.sql" />
-      <EmbeddedResource Include="Scripts\20260416173441_eric_CreateRecipeTable.sql" />
-      <None Remove="Scripts\20260416173824_eric_CreateRecipeIngredientsTable.sql" />
-      <EmbeddedResource Include="Scripts\20260416173824_eric_CreateRecipeIngredientsTable.sql" />
-      <None Remove="Scripts\20260416174308_eric_CreateItemRecipeTable.sql" />
-      <EmbeddedResource Include="Scripts\20260416174308_eric_CreateItemRecipeTable.sql" />
+        <None Remove="Scripts\20260222215950_eric_CreateOrdersTable.sql"/>
+        <None Remove="Scripts\20260222224454_eric_AddDoneColumn.sql"/>
+        <None Remove="Scripts\20260223004631_eric_AddUsersTable.sql"/>
+        <EmbeddedResource Include="Permissions\20260316180922_eric_UserPermissions.sql"/>
+        <EmbeddedResource Include="Scripts\20260223004631_eric_AddUsersTable.sql"/>
+        <None Remove="Scripts\20260223222146_eric_AddUserIdColumn.sql"/>
+        <None Remove="Scripts\20260228143421_eric_AddRefreshTokens.sql"/>
+        <None Remove="Scripts\20260228145722_eric_RemakeRefreshTokensTable.sql"/>
+        <None Remove="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260302172953_eric_CreateRefreshTokensTable.sql"/>
+        <None Remove="Scripts\20260303212150_eric_CreateProductsTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260303212150_eric_CreateProductsTable.sql"/>
+        <None Remove="Scripts\20260305093922_eric_CreateMenuTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260305093922_eric_CreateMenuTable.sql"/>
+        <None Remove="Scripts\20260305095811_eric_CreateMenuItemsTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260305095811_eric_CreateMenuItemsTable.sql"/>
+        <None Remove="Seeds\20260305121949_eric_SeedUsers.sql"/>
+        <EmbeddedResource Include="Seeds\20260305121949_eric_SeedUsers.sql"/>
+        <None Remove="Seeds\20260305122047_eric_AddMenus.sql"/>
+        <EmbeddedResource Include="Seeds\20260305122047_eric_AddMenus.sql"/>
+        <None Remove="Seeds\20260306124122_eric_SeedItems.sql"/>
+        <EmbeddedResource Include="Seeds\20260306124122_eric_SeedItems.sql"/>
+        <None Remove="Scripts\20260315130202_eric_CreateOrderTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260315130202_eric_CreateOrderTable.sql"/>
+        <None Remove="Scripts\20260315130445_eric_CreateOrderItems.sql"/>
+        <None Remove="Seeds\20260316162245_eric_SeedMenuItems.sql"/>
+        <EmbeddedResource Include="Seeds\20260316162245_eric_SeedMenuItems.sql"/>
+        <None Remove="Seeds\20260316180922_eric_UserPermissions.sql"/>
+        <None Remove="Scripts\20260319150228_eric_CreateDenominationEnum.sql"/>
+        <EmbeddedResource Include="Scripts\20260319150228_eric_CreateDenominationEnum.sql"/>
+        <None Remove="Scripts\20260319150846_eric_CreateItemPriceTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260319150846_eric_CreateItemPriceTable.sql"/>
+        <None Remove="Scripts\20260322191500_eric_CreateModifierGroupTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260322191500_eric_CreateModifierGroupTable.sql"/>
+        <None Remove="Scripts\20260322191649_eric_CreateModifierElementTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260322191649_eric_CreateModifierElementTable.sql"/>
+        <None Remove="Scripts\20260322192306_eric_ModifierGroupElement.sql"/>
+        <EmbeddedResource Include="Scripts\20260322192306_eric_ModifierGroupElement.sql"/>
+        <None Remove="Scripts\20260322192947_eric_CreateItemModifierGroupsTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260322192947_eric_CreateItemModifierGroupsTable.sql"/>
+        <None Remove="Seeds\20260322210752_eric_SeedModifierElements.sql"/>
+        <EmbeddedResource Include="Seeds\20260322210752_eric_SeedModifierElements.sql"/>
+        <None Remove="Seeds\20260322210922_eric_SeedModifierGroups.sql"/>
+        <EmbeddedResource Include="Seeds\20260322210922_eric_SeedModifierGroups.sql"/>
+        <None Remove="Seeds\20260322211005_eric_SeedModifierGroupElements.sql"/>
+        <EmbeddedResource Include="Seeds\20260322211005_eric_SeedModifierGroupElements.sql"/>
+        <None Remove="Seeds\20260322223011_eric_SeedItemModifierGroups.sql"/>
+        <EmbeddedResource Include="Seeds\20260322223011_eric_SeedItemModifierGroups.sql"/>
+        <None Remove="Scripts\20260323192910_eric_CreateBillItemModifierTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260323192910_eric_CreateBillItemModifierTable.sql"/>
+        <None Remove="Scripts\20260323192714_eric_CreateBillItemTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260323192714_eric_CreateBillItemTable.sql"/>
+        <None Remove="Scripts\20260407152534_eric_CreateIngredientTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260407152534_eric_CreateIngredientTable.sql"/>
+        <None Remove="Scripts\20260407152733_eric_CreateProviderTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260407152733_eric_CreateProviderTable.sql"/>
+        <None Remove="Scripts\20260407154046_eric_CreateProviderItemTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260407154046_eric_CreateProviderItemTable.sql"/>
+        <None Remove="Scripts\20260407155155_eric_CreateItemIngredientTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260407155155_eric_CreateItemIngredientTable.sql"/>
+        <None Remove="Scripts\20260410184349_eric_CreateLocationTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260410184349_eric_CreateLocationTable.sql"/>
+        <None Remove="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260414141613_eric_CreateBranchIngredientTable.sql"/>
+        <None Remove="Scripts\20260416173441_eric_CreateRecipeTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260416173441_eric_CreateRecipeTable.sql"/>
+        <None Remove="Scripts\20260416173824_eric_CreateRecipeIngredientsTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260416173824_eric_CreateRecipeIngredientsTable.sql"/>
+        <None Remove="Scripts\20260416174308_eric_CreateItemRecipeTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260416174308_eric_CreateItemRecipeTable.sql"/>
+        <None Remove="Scripts\20260418171702_eric_CreateBranchInventoryHistoryTable.sql"/>
+        <EmbeddedResource Include="Scripts\20260418171702_eric_CreateBranchInventoryHistoryTable.sql"/>
     </ItemGroup>
 
 </Project>
