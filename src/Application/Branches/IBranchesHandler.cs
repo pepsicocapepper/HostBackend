@@ -10,6 +10,8 @@ public interface IBranchesHandler
     public Task<PaginatedData<BranchDto>> GetPaginatedBranches(PaginationQuery paginationQuery,
         CancellationToken cancellationToken = default);
 
+    public Task<List<BranchDto>> GetAllBranches(CancellationToken cancellationToken = default);
+
     public Task<ErrorOr<BranchDto>> GetBranchById(Guid id, CancellationToken cancellationToken = default);
 
     public Task<ErrorOr<PaginatedData<MinimalUserDto>>> GetPaginatedBranchUsers(PaginationQuery paginationQuery,

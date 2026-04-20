@@ -14,11 +14,18 @@ public static class Branches
     {
         var group = app.MapGroup("/branches");
         group.MapGet("/", GetPaginatedBranches).RequireAuthorization();
+        group.MapGet("/all", GetAllBranches).RequireAuthorization();
         group.MapGet("/{id:guid}", GetBranchById).RequireAuthorization();
         group.MapGet("/{branchId:guid}/users", GetPaginatedBranchUsers).RequireAuthorization();
         group.MapPost("/", CreateBranch).RequireAuthorization();
     }
 
+    private static async Task<Ok<List<BranchDto>>> GetAllBranches(
+    [FromServices] IBranchesHandler handler, CancellationToken ct)
+    {
+        var result = await handler.GetAllBranches(ct);
+        return TypedResults.Ok(result);
+    }
     private static async Task<Ok<PaginatedData<BranchDto>>> GetPaginatedBranches(int? pageNumber, int? pageSize,
         [FromServices] IBranchesHandler handler, CancellationToken ct)
     {

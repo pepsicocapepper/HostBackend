@@ -7,6 +7,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using ErrorOr;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Branches;
 
@@ -28,6 +29,15 @@ internal class BranchesHandler : IBranchesHandler
             .Branches
             .ProjectTo<BranchDto>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(paginationQuery, cancellationToken);
+    }
+
+    public async Task<List<BranchDto>> GetAllBranches(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext
+                .Branches
+                .AsNoTracking() 
+                .ProjectTo<BranchDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
     }
 
     public async Task<ErrorOr<BranchDto>> GetBranchById(Guid id, CancellationToken cancellationToken = default)

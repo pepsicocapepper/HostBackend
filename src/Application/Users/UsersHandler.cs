@@ -49,7 +49,7 @@ public class UsersHandler : IUsersHandler
             var user = await _dbContext.Users
                 .Where(u=>u.Id==id)
                 .FirstOrDefaultAsync(cancellationToken);
-            user!.Active=false;
+                user!.Active=false;
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return true;
