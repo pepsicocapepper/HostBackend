@@ -46,4 +46,18 @@ internal class QbHandler : IQbHandler
 
         return true;
     }
+
+    public async Task<ErrorOr<bool>> CreateSalesReceipt(Guid billId, CancellationToken ct = default)
+    {
+        var credentials = await _dbContext
+            .UserQuickbooksCredentials
+            .FindAsync([_userContext.UserId!.Value], ct);
+
+        if (credentials == null)
+        {
+            return Error.NotFound(IntuitErrorCodes.NotFound);
+        }
+
+        return await _qbApi.CreateSalesReceipt(credentials.AccessToken, ct);
+    }
 }

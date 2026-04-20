@@ -47,7 +47,8 @@ public static class DependencyInjection
         {
             string? clientId = Environment.GetEnvironmentVariable("QB_CLIENT_ID");
             string? clientSecret = Environment.GetEnvironmentVariable("QB_CLIENT_SECRET");
-            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret))
+            string? realmId = Environment.GetEnvironmentVariable("QB_REALM_ID");
+            if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(clientSecret) || string.IsNullOrEmpty(realmId))
             {
                 throw new ArgumentNullException(nameof(clientId));
             }
@@ -55,7 +56,7 @@ public static class DependencyInjection
             OAuth2Client client =
                 new OAuth2Client(clientId, clientSecret, "http://localhost:5173/admin/intuit-redirect", "sandbox");
 
-            return new QbApi(client);
+            return new QbApi(client, realmId);
         });
 
         builder.Services.AddAuthentication()

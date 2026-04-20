@@ -13,6 +13,7 @@ public static class Intuit
         var group = app.MapGroup("/intuit");
         group.MapGet("/auth", GetAuthorizationUrl);
         group.MapPost("/auth", ExchangeAuthCode).RequireAuthorization();
+        group.MapPost("/sales-receipt", CreateSalesReceipt).RequireAuthorization();
     }
 
     private static async Task<Results<Ok<string>, BadRequest<ProblemDetails>>> GetAuthorizationUrl(
@@ -36,6 +37,19 @@ public static class Intuit
         if (result.IsError)
         {
             return TypedResults.BadRequest(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Created();
+    }
+
+    private static async Task<Results<Created, UnauthorizedHttpResult>> CreateSalesReceipt(
+        [FromServices] IQbHandler handler, CancellationToken ct)
+    {
+        var result = await handler.CreateSalesReceipt(Guid.NewGuid(), ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.Unauthorized();
         }
 
         return TypedResults.Created();
