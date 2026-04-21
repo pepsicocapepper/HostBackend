@@ -8,7 +8,7 @@ public class StaffingConfiguration : IEntityTypeConfiguration<Staffing>
 {
     public void Configure(EntityTypeBuilder<Staffing> builder)
     {
- builder.ToTable("punching_times");
+ builder.ToTable("staffing");
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
         builder.Property(t => t.Name).HasColumnName("name").IsRequired();
         builder.Property(t => t.CreatedAt).HasColumnName("created_at");

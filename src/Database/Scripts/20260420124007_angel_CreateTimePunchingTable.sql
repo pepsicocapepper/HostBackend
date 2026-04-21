@@ -4,6 +4,7 @@ CREATE TABLE punching_times
     id         UUID PRIMARY KEY  DEFAULT gen_random_uuid(),
     in_or_out  CHAR         NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    user_id     UUID        NOT NULL,
     FOREIGN KEY (user_id) REFERENCES host_user (id)
 );
 

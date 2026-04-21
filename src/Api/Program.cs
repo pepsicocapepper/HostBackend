@@ -42,5 +42,6 @@ app.MapProviders();
 app.MapIngredients();
 app.MapBranches();
 app.MapUsers();
+app.MapStaffing();
 
 app.Run();

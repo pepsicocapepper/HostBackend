@@ -2,8 +2,9 @@
 CREATE TABLE staffing
 (
     id         UUID PRIMARY KEY  DEFAULT gen_random_uuid(),
-    name        string         NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    name       TEXT         NOT NULL,
+    active      BOOLEAN NOT NULL DEFAULT true,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- //tabla staffing

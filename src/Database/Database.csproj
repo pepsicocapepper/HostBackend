@@ -81,6 +81,11 @@
       <EmbeddedResource Include="Scripts\20260407155155_eric_CreateItemIngredientTable.sql" />
       <None Remove="Scripts\20260410184349_eric_CreateLocationTable.sql" />
       <EmbeddedResource Include="Scripts\20260410184349_eric_CreateLocationTable.sql" />
+      <None Remove="Scripts\20260420124007_angel_CreateTimePunchingTable.sql" />
+      <EmbeddedResource Include="Scripts\20260420124007_angel_CreateTimePunchingTable.sql" />
+      <None Remove="Scripts\20260420174557_angel_CreateStaffingTable.sql" />
+      <EmbeddedResource Include="Scripts\20260420174557_angel_CreateStaffingTable.sql" />
+      <None Remove="Seeds\20260420174557_angel_SeedStaffing.sql" />
+      <EmbeddedResource Include="Seeds\20260420174557_angel_SeedStaffing.sql" />
     </ItemGroup>
-
 </Project>

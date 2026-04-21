@@ -25,5 +25,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<IIngredientsHandler, IngredientsHandler>();
         builder.Services.AddScoped<IProvidersHandler, ProvidersHandler>();
         builder.Services.AddScoped<IBranchesHandler, BranchesHandler>();
+        builder.Services.AddScoped<IStaffingHandler, StaffingHandler>();
     }
 }
