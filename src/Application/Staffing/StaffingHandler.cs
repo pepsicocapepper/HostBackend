@@ -21,7 +21,6 @@ public class StaffingHandler : IStaffingHandler
 {   
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _dbContext;
-    private readonly ITokenProvider _tokenProvider;
     private readonly IValidator<RegisterUserDto> _registerUserValidator;
 
     public StaffingHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider, IMapper mapper,

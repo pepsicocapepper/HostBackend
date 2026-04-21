@@ -21,6 +21,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(t => t.Pin).HasColumnName("pin").IsRequired();
         builder.Property(t => t.Active).HasColumnName("active");
         builder.Property(t => t.CreatedAt).HasColumnName("created_at");
+         builder.Property(t => t.StaffingId).HasColumnName("staffing_id").IsRequired();
+
+        builder.HasOne(t => t.Staffing)
+            .WithMany(t => t.Users)
+            .HasForeignKey(t => t.StaffingId)
+            .HasConstraintName("host_user_staffing_id_fkey");
+
         builder.Property(t => t.BranchId).HasColumnName("branch_id").IsRequired();
 
         builder.HasOne(t => t.Branch)
