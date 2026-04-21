@@ -42,14 +42,14 @@ public static class Intuit
         return TypedResults.Created();
     }
 
-    private static async Task<Results<Created, UnauthorizedHttpResult>> CreateSalesReceipt(
+    private static async Task<Results<Created, ForbidHttpResult>> CreateSalesReceipt([FromBody] SelectedBillsDto dto,
         [FromServices] IQbHandler handler, CancellationToken ct)
     {
-        var result = await handler.CreateSalesReceipt(Guid.NewGuid(), ct);
+        var result = await handler.CreateSalesReceipt(dto, ct);
 
         if (result.IsError)
         {
-            return TypedResults.Unauthorized();
+            return TypedResults.Forbid();
         }
 
         return TypedResults.Created();

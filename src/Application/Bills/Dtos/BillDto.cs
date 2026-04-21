@@ -7,6 +7,7 @@ namespace Application.Bills.Dtos;
 
 public class BillDto
 {
+    public Guid Id { get; set; }
     public decimal Amount { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid CreatedBy { get; set; }

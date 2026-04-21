@@ -1,7 +1,9 @@
 using Application.Common.Abstractions;
 using Application.Common.Interfaces;
+using Application.Intuit.Dtos;
 using Domain.Entities;
 using ErrorOr;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Intuit;
 
@@ -47,17 +49,23 @@ internal class QbHandler : IQbHandler
         return true;
     }
 
-    public async Task<ErrorOr<bool>> CreateSalesReceipt(Guid billId, CancellationToken ct = default)
+    public async Task<ErrorOr<bool>> CreateSalesReceipt(SelectedBillsDto dto, CancellationToken ct = default)
     {
         var credentials = await _dbContext
             .UserQuickbooksCredentials
             .FindAsync([_userContext.UserId!.Value], ct);
+
+        var bills = await _dbContext
+            .Bills
+            .Include(bill => bill.CreatedByUser)
+            .Where(bill => dto.BillIds.Contains(bill.Id))
+            .ToListAsync(ct);
 
         if (credentials == null)
         {
             return Error.NotFound(IntuitErrorCodes.NotFound);
         }
 
-        return await _qbApi.CreateSalesReceipt(credentials.AccessToken, ct);
+        return _qbApi.CreateSalesReceipt(bills, credentials.AccessToken);
     }
 }

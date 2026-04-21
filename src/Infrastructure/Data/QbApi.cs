@@ -6,6 +6,7 @@ using Intuit.Ipp.Data;
 using Intuit.Ipp.DataService;
 using Intuit.Ipp.OAuth2PlatformClient;
 using Intuit.Ipp.Security;
+using Bill = Domain.Entities.Bill;
 using Error = ErrorOr.Error;
 using Task = System.Threading.Tasks.Task;
 
@@ -54,7 +55,8 @@ public sealed class QbApi(OAuth2Client client, string realmId) : IQbApi
         return new TokensDto(response.AccessToken, response.RefreshToken);
     }
 
-    public Task<ErrorOr<bool>> CreateSalesReceipt(string accessToken, CancellationToken ct = default)
+
+    public ErrorOr<bool> CreateSalesReceipt(ICollection<Bill> bills, string accessToken)
     {
         var dataService = CreateDataService(accessToken);
         dataService.Add(new SalesReceipt
@@ -62,28 +64,26 @@ public sealed class QbApi(OAuth2Client client, string realmId) : IQbApi
             CustomerRef = new ReferenceType { Value = "1" },
             TxnDate = DateTime.UtcNow,
             TxnDateSpecified = true,
-            Line =
-            [
-                new Line
+            Line = bills.Select((bill, index) => new Line
+            {
+                Description = $"Bill #{index} - {bill.CreatedByUser.Name}",
+                DetailType = LineDetailTypeEnum.SalesItemLineDetail,
+                AnyIntuitObject = new SalesItemLineDetail
                 {
-                    Description = "Test",
-                    DetailType = LineDetailTypeEnum.SalesItemLineDetail,
-                    AnyIntuitObject = new SalesItemLineDetail
+                    TaxCodeRef = new ReferenceType
                     {
-                        TaxCodeRef = new ReferenceType
-                        {
-                            Value = "NON"
-                        },
-                        Qty = 1,
-                        QtySpecified = true,
+                        Value = "NON"
                     },
-                    Amount = 100.00m,
-                    AmountSpecified = true,
-                    DetailTypeSpecified = true,
-                }
-            ]
+                    Qty = 1,
+                    QtySpecified = true,
+                    ServiceDate = bill.CreatedAt,
+                },
+                Amount = bill.Amount,
+                AmountSpecified = true,
+                DetailTypeSpecified = true,
+            }).ToArray()
         });
-        return Task.FromResult<ErrorOr<bool>>(true);
+        return true;
     }
 
     // public async Task<IReadOnlyCollection<object>> GetPaginatedInvoices(PaginationQuery paginationQuery,
