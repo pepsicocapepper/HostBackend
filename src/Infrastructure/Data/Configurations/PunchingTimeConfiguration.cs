@@ -12,6 +12,7 @@ public class PunchingTimeConfigurataion : IEntityTypeConfiguration<PunchingTime>
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
         builder.Property(t => t.InOrOut).HasColumnName("in_or_out").IsRequired();
         builder.Property(t => t.CreatedAt).HasColumnName("created_at");
+        builder.Property(t => t.Active).HasColumnName("active").IsRequired();
         builder.Property(t => t.UserId).HasColumnName("user_id").IsRequired();
 
         builder.HasOne(t => t.User)
