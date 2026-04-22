@@ -9,5 +9,6 @@ public record RegisterUserDto(
     string JobTitle,
     string Phone,
     bool Active,
-    Guid BranchId
+    Guid BranchId,
+    Guid StaffingId
 );

@@ -7,7 +7,7 @@ CREATE TABLE staffing
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- //tabla staffing
--- //campo staffing en usuario
--- //horas de usuarios por staffing o branch
--- //poder editar registros
+ALTER TABLE host_user
+    ADD COLUMN staffing_id UUID NOT NULL,
+    ADD FOREIGN KEY (staffing_id) REFERENCES staffing (id);
+-- mueve todo en user para que jale el endpoint, luego el frontend tambien

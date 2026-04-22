@@ -14,6 +14,7 @@ public class UserDto
     public bool Active { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid BranchId { get; set; }
+    public Guid StaffingId { get; set; }
     private class UserProfile : Profile
     {
         public UserProfile()

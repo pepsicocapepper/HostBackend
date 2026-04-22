@@ -8,6 +8,6 @@ CREATE TABLE host_user
     job_title    TEXT        NOT NULL,
     phone   TEXT NULL,
     pin        TEXT        NOT NULL UNIQUE,
-    active     BOOLEAN       NULL,
+    active     BOOLEAN       NULL DEFAULT true,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

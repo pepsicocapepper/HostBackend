@@ -78,6 +78,7 @@ public class UsersHandler : IUsersHandler
         user.JobTitle=editUserDto.JobTitle;
         user.Active=editUserDto.Active;
         user.BranchId=editUserDto.BranchId;
+        user.StaffingId=editUserDto.StaffingId;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -109,7 +110,10 @@ public class UsersHandler : IUsersHandler
             Surname = registerUserDto.Surname,
             Pin = registerUserDto.Pin,
             JobTitle=registerUserDto.JobTitle,
-            BranchId = registerUserDto.BranchId
+            BranchId = registerUserDto.BranchId,
+            Phone=registerUserDto.Phone,
+            StaffingId = registerUserDto.StaffingId,
+            Active=true
         };
 
         await _dbContext.Users.AddAsync(user, cancellationToken);
