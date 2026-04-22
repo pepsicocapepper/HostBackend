@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Items.Dtos;
+using Application.Modifiers.Dtos;
 using Application.Recipes.Dtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -129,5 +130,25 @@ public class ItemsHandler : IItemsHandler
 
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
+    }
+
+    public async Task<ErrorOr<PaginatedData<ModifierGroupDto>>> GetPaginatedModGroupsNotInItem(
+        PaginationQuery paginationQuery, int itemId,
+        CancellationToken cancellationToken = default)
+    {
+        var itemExists = await _dbContext.Items.AnyAsync(i => i.Id == itemId, cancellationToken);
+
+        if (!itemExists)
+        {
+            return Error.NotFound(ItemErrorCodes.NotFound);
+        }
+
+        return await _dbContext
+            .ModifierGroups
+            .Where(modifierGroup =>
+                modifierGroup.ItemModifierGroups.Any(ip =>
+                    ip.ModifierGroupId == modifierGroup.Id && ip.ItemId == itemId))
+            .ProjectTo<ModifierGroupDto>(_mapper.ConfigurationProvider)
+            .PaginatedListAsync(paginationQuery, cancellationToken);
     }
 }

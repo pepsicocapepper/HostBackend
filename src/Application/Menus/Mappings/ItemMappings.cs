@@ -43,7 +43,7 @@ public static class ItemMappings
             UpdatedAt = mi.Item.UpdatedAt,
             UpdatedBy = mi.Item.UpdatedBy,
             ModifierGroups = mi.Item.ItemModifierGroups.Select(img => img.ModifierGroups)
-                .Select(mg => new ModifierGroupDto
+                .Select(mg => new ModifierGroupWithElementsDto
                 {
                     Id = mg.Id,
                     Name = mg.Name,

@@ -17,7 +17,7 @@ public class ItemWithPriceDto
     public DateTime CreatedAt { get; set; }
     public Guid? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public List<ModifierGroupDto> ModifierGroups { get; set; } = [];
+    public List<ModifierGroupWithElementsDto> ModifierGroups { get; set; } = [];
 
     private class ItemWithPriceProfile : Profile
     {

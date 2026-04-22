@@ -7,11 +7,10 @@ public class ModifierGroupDto
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }
-    public List<ModifierElementDto> ModifierElements { get; set; } = [];
 
-    private class ModifierGroupProfile : Profile
+    private class ModifierGroupsDtoProfile : Profile
     {
-        public ModifierGroupProfile()
+        public ModifierGroupsDtoProfile()
         {
             CreateMap<ModifierGroup, ModifierGroupDto>();
         }

@@ -2,6 +2,8 @@ using Api.Common.Extensions;
 using Application.Common.Models;
 using Application.Items;
 using Application.Items.Dtos;
+using Application.Modifiers;
+using Application.Modifiers.Dtos;
 using Application.Recipes.Dtos;
 using Domain.Common.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -24,6 +26,7 @@ public static class Items
         group.MapDelete("/{itemId:int}", DeleteItem).RequireAuthorization();
         group.MapGet("/{itemId:int}/ingredients", GetIngredients).RequireAuthorization();
         group.MapGet("/{itemId:int}/available-recipes", GetPaginatedRecipesNotInItem).RequireAuthorization();
+        group.Map("/{itemId:int}/available-mod-groups", GetPaginatedModGroupsNotInItem).RequireAuthorization();
     }
 
     private static async Task<Ok<IEnumerable<ItemIngredientDto>>> GetIngredients(int itemId,
@@ -88,5 +91,20 @@ public static class Items
     {
         await handler.DeleteItem(itemId, ct);
         return TypedResults.Ok();
+    }
+
+    private static async Task<Results<Ok<PaginatedData<ModifierGroupDto>>, NotFound<ProblemDetails>>>
+        GetPaginatedModGroupsNotInItem(int? pageNumber, int? pageSize, int itemId,
+            [FromServices] IItemsHandler handler, CancellationToken ct)
+    {
+        var result =
+            await handler.GetPaginatedModGroupsNotInItem(new PaginationQuery(pageNumber, pageSize), itemId, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(result.Value);
     }
 }

@@ -24,5 +24,6 @@ public interface IApplicationDbContext
     DbSet<BranchInventoryHistory> BranchInventoryHistories { get; }
     DbSet<UserQuickbooksCredential> UserQuickbooksCredentials { get; }
     public DbSet<ModifierElement> ModifierElements { get; }
+    public DbSet<ModifierGroup> ModifierGroups { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

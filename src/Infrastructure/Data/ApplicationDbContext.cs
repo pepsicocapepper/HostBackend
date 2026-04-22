@@ -31,6 +31,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<BranchInventoryHistory> BranchInventoryHistories => Set<BranchInventoryHistory>();
     public DbSet<UserQuickbooksCredential> UserQuickbooksCredentials => Set<UserQuickbooksCredential>();
     public DbSet<ModifierElement> ModifierElements => Set<ModifierElement>();
+    public DbSet<ModifierGroup> ModifierGroups => Set<ModifierGroup>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

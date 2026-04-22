@@ -1,5 +1,6 @@
 using Application.Common.Models;
 using Application.Items.Dtos;
+using Application.Modifiers.Dtos;
 using Application.Recipes.Dtos;
 using Domain.Common;
 using Domain.Entities;
@@ -20,4 +21,6 @@ public interface IItemsHandler
 
     Task<IEnumerable<ItemIngredientDto>> GetAllIngredients(int itemId, CancellationToken cancellationToken = default);
     Task DeleteItem(int itemId, CancellationToken cancellationToken = default);
+    public Task<ErrorOr<PaginatedData<ModifierGroupDto>>> GetPaginatedModGroupsNotInItem(
+        PaginationQuery paginationQuery, int itemId, CancellationToken cancellationToken = default);
 }
