@@ -23,5 +23,6 @@ public interface IApplicationDbContext
     DbSet<ItemRecipe> ItemRecipes { get; }
     DbSet<BranchInventoryHistory> BranchInventoryHistories { get; }
     DbSet<UserQuickbooksCredential> UserQuickbooksCredentials { get; }
+    public DbSet<ModifierElement> ModifierElements { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

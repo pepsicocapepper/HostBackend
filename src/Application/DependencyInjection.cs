@@ -5,6 +5,7 @@ using Application.Ingredients;
 using Application.Intuit;
 using Application.Items;
 using Application.Menus;
+using Application.Modifiers;
 using Application.Providers;
 using Application.Recipes;
 using Application.Users;
@@ -28,6 +29,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<IProvidersHandler, ProvidersHandler>();
         builder.Services.AddScoped<IBranchesHandler, BranchesHandler>();
         builder.Services.AddScoped<IRecipesHandler, RecipesHandler>();
+        builder.Services.AddScoped<IModifiersHandler, ModifiersHandler>();
         builder.Services.AddScoped<IQbHandler, QbHandler>();
     }
 }

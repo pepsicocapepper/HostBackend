@@ -30,6 +30,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<ItemRecipe> ItemRecipes => Set<ItemRecipe>();
     public DbSet<BranchInventoryHistory> BranchInventoryHistories => Set<BranchInventoryHistory>();
     public DbSet<UserQuickbooksCredential> UserQuickbooksCredentials => Set<UserQuickbooksCredential>();
+    public DbSet<ModifierElement> ModifierElements => Set<ModifierElement>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

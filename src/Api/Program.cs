@@ -43,5 +43,6 @@ app.MapIngredients();
 app.MapBranches();
 app.MapRecipes();
 app.MapIntuit();
+app.MapModifiers();
 
 app.Run();
