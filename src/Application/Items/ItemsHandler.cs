@@ -59,7 +59,13 @@ public class ItemsHandler : IItemsHandler
             ItemRecipes = createItemDto.RecipeIds.Select(id => new ItemRecipe
             {
                 RecipeId = id
-            }).ToList()
+            }).ToList(),
+            ItemModifierGroups = createItemDto.ModifierIds.Select((id, index) => new ItemModifierGroup
+            {
+                ModifierGroupId = id,
+                DisplayOrder = index + 1
+            }).ToList(),
+            IsActive = true
         };
 
         await _dbContext.Items.AddAsync(item, cancellationToken);

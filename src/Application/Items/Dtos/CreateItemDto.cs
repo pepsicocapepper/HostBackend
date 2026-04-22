@@ -10,5 +10,6 @@ public record CreateItemDto(
     string? Description,
     PricingModel PricingModel,
     List<CreateItemPriceDto> Prices,
+    List<Guid> ModifierIds,
     List<Guid> RecipeIds
 );

@@ -17,6 +17,7 @@ public class ItemModifierGroupConfiguration : IEntityTypeConfiguration<ItemModif
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
         builder.Property(t => t.ModifierGroupId).HasColumnName("group_id").IsRequired();
         builder.Property(t => t.ItemId).HasColumnName("item_id").IsRequired();
+        builder.Property(t => t.DisplayOrder).HasColumnName("display_order").IsRequired();
 
         builder.HasOne(t => t.Item)
             .WithMany(t => t.ItemModifierGroups)
