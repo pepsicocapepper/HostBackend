@@ -111,7 +111,9 @@ public class UsersHandler : IUsersHandler
             Pin = registerUserDto.Pin,
             JobTitle=registerUserDto.JobTitle,
             BranchId = registerUserDto.BranchId,
-            StaffingId = registerUserDto.StaffingId
+            Phone=registerUserDto.Phone,
+            StaffingId = registerUserDto.StaffingId,
+            Active=true
         };
 
         await _dbContext.Users.AddAsync(user, cancellationToken);

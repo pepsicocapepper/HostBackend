@@ -35,8 +35,8 @@
       <EmbeddedResource Include="Scripts\20260305093922_eric_CreateMenuTable.sql" />
       <None Remove="Scripts\20260305095811_eric_CreateMenuItemsTable.sql" />
       <EmbeddedResource Include="Scripts\20260305095811_eric_CreateMenuItemsTable.sql" />
-      <None Remove="Seeds\p.sql" />
-      <EmbeddedResource Include="Seeds\20260420180000_eric_SeedUsers.sql" />
+      <None Remove="Seeds\20260305121949_eric_SeedUsers.sql" />
+      <EmbeddedResource Include="Seeds\20260305121949_eric_SeedUsers.sql" />
       <None Remove="Seeds\20260305122047_eric_AddMenus.sql" />
       <EmbeddedResource Include="Seeds\20260305122047_eric_AddMenus.sql" />
       <None Remove="Seeds\20260306124122_eric_SeedItems.sql" />
