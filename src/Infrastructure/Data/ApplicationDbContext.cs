@@ -17,7 +17,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Item> Item => Set<Item>();
     public DbSet<Menu> Menus => Set<Menu>();
     public DbSet<Staffing> Staffings => Set<Staffing>();
-
     public DbSet<MenuItem> MenuItems => Set<MenuItem>();
     public DbSet<Bill> Bills => Set<Bill>();
     public DbSet<BillItem> BillItems => Set<BillItem>();
@@ -26,6 +25,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Provider> Providers => Set<Provider>();
     public DbSet<IngredientProvider> IngredientProviders => Set<IngredientProvider>();
     public DbSet<Branch> Branches => Set<Branch>();
+    public DbSet<UserPunchTime> UserPunchTimes => Set<UserPunchTime>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

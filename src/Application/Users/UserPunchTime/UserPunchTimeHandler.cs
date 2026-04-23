@@ -47,7 +47,7 @@ public class UserPunchTimeHandler : IUserPunchTimeHandler
             UserId=id
         };
 
-        await _dbContext.UserPunchTime.AddAsync(punch, cancellationToken);
+        await _dbContext.UserPunchTimes.AddAsync(punch, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return punch.Id;
     }
@@ -55,7 +55,7 @@ public class UserPunchTimeHandler : IUserPunchTimeHandler
     public async Task<PaginatedData<UserPunchTimeDto>> GetPaginatedPunches(CancellationToken cancellationToken)
     {
          var punches = await _dbContext
-            .UserPunchTime
+            .UserPunchTimes
             .ProjectTo<UserPunchTimeDto>(_punchMapper.ConfigurationProvider)
             .PaginatedListAsync(1,10,cancellationToken);
         return punches;
@@ -63,7 +63,7 @@ public class UserPunchTimeHandler : IUserPunchTimeHandler
 
     public async Task<UserPunchTimeDto?> GetPunch(int id,CancellationToken cancellationToken)
     {
-       return await _dbContext.UserPunchTime
+       return await _dbContext.UserPunchTimes
                         .Where(u=>u.Id==id)
                         .ProjectTo<UserPunchTimeDto>(_punchMapper.ConfigurationProvider)
                         .FirstOrDefaultAsync(cancellationToken);
@@ -72,14 +72,14 @@ public class UserPunchTimeHandler : IUserPunchTimeHandler
 
     public async Task<UserPunchTimeDto?> GetPaginatedPunches(int id, CancellationToken cancellationToken)
     {
-       return await _dbContext.UserPunchTime
+       return await _dbContext.UserPunchTimes
                         .Where(u=>u.Id==id)
                         .ProjectTo<UserPunchTimeDto>(_punchMapper.ConfigurationProvider)
                         .FirstOrDefaultAsync(cancellationToken);
     }
     public async Task<EditUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken)
     {
-        var punch = await _dbContext.UserPunchTime
+        var punch = await _dbContext.UserPunchTimes
                 .Where(u=>u.Id==id)
                 .FirstOrDefaultAsync(cancellationToken);
                     
@@ -101,12 +101,12 @@ public class UserPunchTimeHandler : IUserPunchTimeHandler
         try
         {   
 
-            var punch = await _dbContext.UserPunchTime
+            var punch = await _dbContext.UserPunchTimes
                 .Where(u=>u.Id==id)
                 .FirstOrDefaultAsync(cancellationToken);
             if (punch != null)
             {
-                _dbContext.UserPunchTime.Remove(punch);
+                _dbContext.UserPunchTimes.Remove(punch);
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 return true;
             }

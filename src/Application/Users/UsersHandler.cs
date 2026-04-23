@@ -13,6 +13,7 @@ using AutoMapper.QueryableExtensions;
 using System.Reflection.Metadata.Ecma335;
 using ErrorOr;
 using FluentValidation;
+using Application.UserPunchTime.Dto;
 
 namespace Application.Users;
 
@@ -22,14 +23,16 @@ public class UsersHandler : IUsersHandler
     private readonly IApplicationDbContext _dbContext;
     private readonly ITokenProvider _tokenProvider;
     private readonly IValidator<RegisterUserDto> _registerUserValidator;
+    private readonly IValidator<MinimalUserPunchTimeDto> _registerUserPunchTimeValidator;
 
     public UsersHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider, IMapper mapper,
-        IValidator<RegisterUserDto> registerUserValidator) 
+        IValidator<RegisterUserDto> registerUserValidator,IValidator<MinimalUserPunchTimeDto> registerUserPunchTimeValidator) 
     {
         _dbContext = dbContext;
         _tokenProvider = tokenProvider;
         _mapper = mapper;
         _registerUserValidator = registerUserValidator;
+        _registerUserPunchTimeValidator = registerUserPunchTimeValidator;
     }
 
     public async Task<UserDto?> GetUser(Guid id,CancellationToken cancellationToken)
@@ -141,6 +144,95 @@ public class UsersHandler : IUsersHandler
         return await _tokenProvider.GenerateTokensAsync(dbToken.User, dbToken.Token);
     }
 
-    
+    public async Task<ErrorOr<int>>Punch(Guid id, MinimalUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken)
+    {
+        var validationResult = _registerUserPunchTimeValidator.Validate(minPunchTimeDto);
+
+        if (!validationResult.IsValid)
+        {
+            return Error.Validation("MinimalUserPunchTimeDto", "Error",
+                validationResult.Errors.ToDictionary(x => x.PropertyName, object (x) => x.ErrorMessage));
+        }
+
+        var punch = new Domain.Entities.UserPunchTime
+        {
+            IsEntrance=minPunchTimeDto.IsEntrance,
+            UserId=id
+        };
+
+        await _dbContext.UserPunchTimes.AddAsync(punch, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return punch.Id;
+    }
+
+    public async Task<PaginatedData<UserPunchTimeDto>> GetPaginatedPunches(CancellationToken cancellationToken)
+    {
+         var punches = await _dbContext
+            .UserPunchTimes
+            .ProjectTo<UserPunchTimeDto>(_mapper.ConfigurationProvider)
+            .PaginatedListAsync(1,10,cancellationToken);
+        return punches;
+    }
+
+    public async Task<UserPunchTimeDto?> GetPunch(int id,CancellationToken cancellationToken)
+    {
+       return await _dbContext.UserPunchTimes
+                        .Where(u=>u.Id==id)
+                        .ProjectTo<UserPunchTimeDto>(_mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync(cancellationToken);
+
+    }
+
+    public async Task<UserPunchTimeDto?> GetPaginatedPunches(int id, CancellationToken cancellationToken)
+    {
+       return await _dbContext.UserPunchTimes
+                        .Where(u=>u.Id==id)
+                        .ProjectTo<UserPunchTimeDto>(_mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync(cancellationToken);
+    }
+    public async Task<EditUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken)
+    {
+        var punch = await _dbContext.UserPunchTimes
+                .Where(u=>u.Id==id)
+                .FirstOrDefaultAsync(cancellationToken);
+                    
+        if (punch is null)
+        {
+            return null;
+        }
+
+        punch.IsEntrance=editPunchDto.IsEntrance;
+        punch.UserId=editPunchDto.UserId;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+
+        return editPunchDto;
+    }
+    public async Task<bool> DeletePunch(int id,CancellationToken cancellationToken)
+    {
+        try
+        {   
+
+            var punch = await _dbContext.UserPunchTimes
+                .Where(u=>u.Id==id)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (punch != null)
+            {
+                _dbContext.UserPunchTimes.Remove(punch);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
 }

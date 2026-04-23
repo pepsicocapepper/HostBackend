@@ -22,6 +22,14 @@ public static class Users
         group.MapGet("/{id}", GetUser).WithName("GetUser");
         group.MapPut("/{id}",EditUser);
         group.MapDelete("/{id}",DeleteUser);
+
+        var punchGroup = app.MapGroup("/users/punch");
+
+        punchGroup.MapPost("/", Punch).RequireAuthorization();
+        punchGroup.MapGet("/", GetPaginatedPunches).WithName("GetPaginatedPunches");
+        punchGroup.MapGet("/{id}", GetPunch).WithName("GetPunch");
+        punchGroup.MapPut("/{id}",EditPunch);
+        punchGroup.MapDelete("/{id}",DeletePunch);
     }
 
 private static async Task<Results<CreatedAtRoute<UserDto>, BadRequest>> CreateUser(
