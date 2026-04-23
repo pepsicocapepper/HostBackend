@@ -4,20 +4,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations;
 
-public class PunchingTimeConfigurataion : IEntityTypeConfiguration<PunchingTime>
+public class PunchingTimeConfigurataion : IEntityTypeConfiguration<UserPunchTime>
 {
-    public void Configure(EntityTypeBuilder<PunchingTime> builder)
+    public void Configure(EntityTypeBuilder<UserPunchTime> builder)
     {
- builder.ToTable("punching_times");
+ builder.ToTable("user_punch_time");
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
-        builder.Property(t => t.InOrOut).HasColumnName("in_or_out").IsRequired();
+        builder.Property(t => t.IsEntrance).HasColumnName("is_entrance").IsRequired();
         builder.Property(t => t.CreatedAt).HasColumnName("created_at");
-        builder.Property(t => t.Active).HasColumnName("active").IsRequired();
         builder.Property(t => t.UserId).HasColumnName("user_id").IsRequired();
 
         builder.HasOne(t => t.User)
-            .WithMany(t => t.PunchingTimes)
+            .WithMany(t => t.UserPunchTimes)
             .HasForeignKey(t => t.UserId)
-            .HasConstraintName("punching_times_user_id_fkey");
+            .HasConstraintName("user_punch_time_user_id_fkey");
     }
 }

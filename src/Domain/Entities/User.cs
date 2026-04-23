@@ -15,7 +15,7 @@ public class User : BaseEntity<Guid>
     public IEnumerable<Item>? CreatedItems { get; set; }
     public IEnumerable<Item>? UpdatedItems { get; set; }
     public IEnumerable<Bill>? Bills { get; set; }
-    public IEnumerable<PunchingTime>? PunchingTimes { get; set; }
+    public IEnumerable<UserPunchTime>? UserPunchTimes { get; set; }
     public required Guid StaffingId { get; set; }
     public Staffing Staffing { get; set; }=null!;
     public required Guid BranchId { get; set; }
