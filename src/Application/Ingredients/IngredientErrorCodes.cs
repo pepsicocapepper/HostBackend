@@ -2,5 +2,6 @@ namespace Application.Ingredients;
 
 public static class IngredientErrorCodes
 {
-    public const string ValidationError = "Ingredient.ValidationError";
+    public const string Validation = "Ingredient.Validation";
+    public const string NotFound = "Ingredient.NotFound";
 }

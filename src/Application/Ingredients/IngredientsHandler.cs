@@ -7,6 +7,7 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using ErrorOr;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Ingredients;
 
@@ -39,29 +40,42 @@ internal class IngredientsHandler : IIngredientsHandler
 
         if (!validationResult.IsValid)
         {
-            return Error.Validation(IngredientErrorCodes.ValidationError);
+            return Error.Validation(IngredientErrorCodes.Validation);
         }
 
         var ingredient = new Ingredient
         {
             Name = dto.Name,
+            ProviderIngredients = dto.ProviderIds.Select(id => new IngredientProvider
+            {
+                ProviderId = id
+            }).ToList()
         };
 
         await _dbContext.Ingredients.AddAsync(ingredient, cancellationToken);
 
-        if (dto.ProviderIds.Count > 0)
-        {
-            foreach (var provider in dto.ProviderIds)
-            {
-                await _dbContext.IngredientProviders.AddAsync(new IngredientProvider
-                {
-                    Ingredient = ingredient,
-                    ProviderId = provider,
-                }, cancellationToken);
-            }
-        }
-        
         await _dbContext.SaveChangesAsync(cancellationToken);
         return ingredient.Id;
+    }
+
+    public async Task<ErrorOr<bool>> UpdateIngredient(UpdateIngredientDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        var ingredient = await _dbContext.Ingredients.FindAsync([dto.Id], cancellationToken);
+
+        if (ingredient == null)
+        {
+            return Error.NotFound(IngredientErrorCodes.NotFound);
+        }
+
+        ingredient.Name = dto.Name;
+        ingredient.ProviderIngredients = dto.ProviderIds.Select(id => new IngredientProvider
+        {
+            ProviderId = id
+        }).ToList();
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }

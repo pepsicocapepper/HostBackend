@@ -14,6 +14,7 @@ public static class Ingredients
         var group = app.MapGroup("/ingredients");
         group.MapGet("/", GetPaginatedIngredients).RequireAuthorization();
         group.MapPost("/", CreateIngredient).RequireAuthorization();
+        group.MapPatch("/", UpdateIngredient).RequireAuthorization();
     }
 
     private static async Task<Ok<PaginatedData<IngredientDto>>> GetPaginatedIngredients(
@@ -34,5 +35,20 @@ public static class Ingredients
         }
 
         return TypedResults.Created();
+    }
+
+
+    private static async Task<Results<Ok, BadRequest<ProblemDetails>>> UpdateIngredient(
+        [FromBody] UpdateIngredientDto dto,
+        [FromServices] IIngredientsHandler handler, CancellationToken ct)
+    {
+        var result = await handler.UpdateIngredient(dto, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.BadRequest(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok();
     }
 }
