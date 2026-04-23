@@ -123,7 +123,7 @@ private static async Task<Results<CreatedAtRoute<UserDto>, BadRequest>> CreateUs
         return  punch is null? TypedResults.NotFound():TypedResults.Ok(punch);
     }
 
-    private static async Task<Results<Ok<EditUserPunchTimeDto?>, NotFound>> 
+    private static async Task<Results<Ok<MinimalUserPunchTimeDto?>, NotFound>> 
     EditPunch([FromServices] IUsersHandler handler,int id,EditUserPunchTimeDto userPunchTimeDto,CancellationToken ct)
     {
         var punch = await handler.EditPunch(id,userPunchTimeDto,ct);
