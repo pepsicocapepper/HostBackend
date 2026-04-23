@@ -27,7 +27,7 @@ public interface IUsersHandler
     Task<bool> DeleteUser(Guid id,CancellationToken cancellationToken);
     Task<ErrorOr<int>>Punch(Guid id, MinimalUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken);
 
-    Task<UserPunchTimeDto?> GetPaginatedPunches(int id, CancellationToken cancellationToken);
+    Task<PaginatedData<UserPunchTimeDto>> GetPaginatedPunches(CancellationToken cancellationToken);
 
     Task<UserPunchTimeDto?> GetPunch(int id,CancellationToken cancellationToken);
 

@@ -14,7 +14,7 @@ public class UserPunchTimeDto
     {
         public PunchingTimeProfile()
         {
-            CreateMap<Staffing, UserPunchTimeDto>();
+            CreateMap<Domain.Entities.UserPunchTime, UserPunchTimeDto>();
         }
     }
 }

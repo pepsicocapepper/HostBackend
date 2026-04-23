@@ -183,13 +183,6 @@ public class UsersHandler : IUsersHandler
 
     }
 
-    public async Task<UserPunchTimeDto?> GetPaginatedPunches(int id, CancellationToken cancellationToken)
-    {
-       return await _dbContext.UserPunchTimes
-                        .Where(u=>u.Id==id)
-                        .ProjectTo<UserPunchTimeDto>(_mapper.ConfigurationProvider)
-                        .FirstOrDefaultAsync(cancellationToken);
-    }
     public async Task<EditUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken)
     {
         var punch = await _dbContext.UserPunchTimes
@@ -202,7 +195,7 @@ public class UsersHandler : IUsersHandler
         }
 
         punch.IsEntrance=editPunchDto.IsEntrance;
-        punch.UserId=editPunchDto.UserId;
+        punch.CreatedAt=editPunchDto.CreatedAt;
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 

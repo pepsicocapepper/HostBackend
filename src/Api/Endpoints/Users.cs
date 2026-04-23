@@ -8,6 +8,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ErrorOr;
+using Application.UserPunchTime.Dto;
 
 namespace Api.Endpoints;
 
@@ -25,7 +26,7 @@ public static class Users
 
         var punchGroup = app.MapGroup("/users/punch");
 
-        punchGroup.MapPost("/", Punch).RequireAuthorization();
+        punchGroup.MapPost("/{id}", Punch);
         punchGroup.MapGet("/", GetPaginatedPunches).WithName("GetPaginatedPunches");
         punchGroup.MapGet("/{id}", GetPunch).WithName("GetPunch");
         punchGroup.MapPut("/{id}",EditPunch);
@@ -82,5 +83,57 @@ private static async Task<Results<CreatedAtRoute<UserDto>, BadRequest>> CreateUs
     {   
         var delUser = await handler.DeleteUser(id,ct);
         return  delUser? TypedResults.Ok():TypedResults.InternalServerError();
+    }
+
+    private static async Task<Results<CreatedAtRoute<UserPunchTimeDto>, BadRequest>> Punch(
+    [FromServices] IUsersHandler handler,
+    [FromBody] MinimalUserPunchTimeDto dto,
+    CancellationToken ct,Guid id)
+{
+    var result = await handler.Punch(id,dto, ct);
+
+    if (!result.IsError)
+    {
+        int punchId = result.Value;
+        
+        // Assuming GetUser returns a UserDto or ErrorOr<UserDto>
+        var response = await handler.GetPunch(punchId, ct); 
+        
+        // You'll need to handle if GetUser fails, but for now:
+        return TypedResults.CreatedAtRoute(response, "GetPunch", new { punchId });
+    }
+    else
+    {
+        // To return a "Not OK" result with details:
+        return TypedResults.BadRequest();
+    }
+}
+
+    private static async Task<Ok<PaginatedData<UserPunchTimeDto>>> GetPaginatedPunches([FromServices] IUsersHandler handler,
+        CancellationToken ct)
+    {
+        var punches = await handler.GetPaginatedPunches(ct);
+        return TypedResults.Ok(punches);
+    }
+
+     private static async Task<Results<Ok<UserPunchTimeDto>, NotFound>> 
+     GetPunch([FromServices] IUsersHandler handler,CancellationToken ct,int id)
+    {
+        var punch = await handler.GetPunch(id,ct);
+        return  punch is null? TypedResults.NotFound():TypedResults.Ok(punch);
+    }
+
+    private static async Task<Results<Ok<EditUserPunchTimeDto?>, NotFound>> 
+    EditPunch([FromServices] IUsersHandler handler,int id,EditUserPunchTimeDto userPunchTimeDto,CancellationToken ct)
+    {
+        var punch = await handler.EditPunch(id,userPunchTimeDto,ct);
+        return  punch is null? TypedResults.NotFound():TypedResults.Ok(punch)!;
+    }
+
+    private static async Task<Results<Ok, InternalServerError>>  
+    DeletePunch([FromServices] IUsersHandler handler, int id,CancellationToken ct)
+    {   
+        var delPunch = await handler.DeletePunch(id,ct);
+        return  delPunch? TypedResults.Ok():TypedResults.InternalServerError();
     }
 }

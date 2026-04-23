@@ -9,8 +9,9 @@ internal sealed class MinimalUserPunchTimeDtoValidator : AbstractValidator<Minim
 {
     public MinimalUserPunchTimeDtoValidator()
     {
-        RuleFor(x => x.IsEntrance)
-            .NotEmpty().WithMessage("Entrance must be defined");
+        //validacion se activaba con falso de booleano
+        // RuleFor(x => x.IsEntrance)
+        //     .NotEmpty().WithMessage("Entrance must be defined");
 
     }
 }

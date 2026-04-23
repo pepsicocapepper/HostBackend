@@ -32,7 +32,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasPostgresEnum<Denomination>("denomination");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        // =======================================
         modelBuilder.Entity<User>().Property(b => b.CreatedAt).ValueGeneratedOnAdd();
+        modelBuilder.Entity<UserPunchTime>().Property(b => b.CreatedAt).ValueGeneratedOnAdd();
         // ^^^^^^
         // le dice al entity framework que usuario no recibira nada en CreatedAt
     }
