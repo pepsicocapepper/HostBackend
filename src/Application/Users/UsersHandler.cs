@@ -14,6 +14,7 @@ using System.Reflection.Metadata.Ecma335;
 using ErrorOr;
 using FluentValidation;
 using Application.UserPunchTime.Dto;
+using System.Data.Common;
 
 namespace Application.Users;
 
@@ -23,10 +24,10 @@ public class UsersHandler : IUsersHandler
     private readonly IApplicationDbContext _dbContext;
     private readonly ITokenProvider _tokenProvider;
     private readonly IValidator<RegisterUserDto> _registerUserValidator;
-    private readonly IValidator<MinimalUserPunchTimeDto> _registerUserPunchTimeValidator;
+    private readonly IValidator<RegisterUserPunchTimeDto> _registerUserPunchTimeValidator;
 
     public UsersHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider, IMapper mapper,
-        IValidator<RegisterUserDto> registerUserValidator,IValidator<MinimalUserPunchTimeDto> registerUserPunchTimeValidator) 
+        IValidator<RegisterUserDto> registerUserValidator,IValidator<RegisterUserPunchTimeDto> registerUserPunchTimeValidator) 
     {
         _dbContext = dbContext;
         _tokenProvider = tokenProvider;
@@ -144,7 +145,7 @@ public class UsersHandler : IUsersHandler
         return await _tokenProvider.GenerateTokensAsync(dbToken.User, dbToken.Token);
     }
 
-    public async Task<ErrorOr<int>>Punch(Guid id, MinimalUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken)
+    public async Task<ErrorOr<int>>Punch(Guid id, RegisterUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken)
     {
         var validationResult = _registerUserPunchTimeValidator.Validate(minPunchTimeDto);
 
@@ -183,7 +184,7 @@ public class UsersHandler : IUsersHandler
 
     }
 
-    public async Task<EditUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken)
+    public async Task<MinimalUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken)
     {
         var punch = await _dbContext.UserPunchTimes
                 .Where(u=>u.Id==id)
@@ -199,8 +200,15 @@ public class UsersHandler : IUsersHandler
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-
-        return editPunchDto;
+        var minDto=new MinimalUserPunchTimeDto
+        {
+            Id=punch.Id,
+            IsEntrance=punch.IsEntrance.Value,
+            CreatedAt=punch.CreatedAt,
+            UserId=punch.UserId
+        };
+        
+        return minDto;
     }
     public async Task<bool> DeletePunch(int id,CancellationToken cancellationToken)
     {

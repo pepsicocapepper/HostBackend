@@ -87,7 +87,7 @@ private static async Task<Results<CreatedAtRoute<UserDto>, BadRequest>> CreateUs
 
     private static async Task<Results<CreatedAtRoute<UserPunchTimeDto>, BadRequest>> Punch(
     [FromServices] IUsersHandler handler,
-    [FromBody] MinimalUserPunchTimeDto dto,
+    [FromBody] RegisterUserPunchTimeDto dto,
     CancellationToken ct,Guid id)
 {
     var result = await handler.Punch(id,dto, ct);

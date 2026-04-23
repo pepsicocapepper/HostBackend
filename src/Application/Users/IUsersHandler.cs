@@ -25,13 +25,13 @@ public interface IUsersHandler
     Task<EditUserDto?> EditUser(Guid id,EditUserDto userDto,CancellationToken cancellationToken);
     
     Task<bool> DeleteUser(Guid id,CancellationToken cancellationToken);
-    Task<ErrorOr<int>>Punch(Guid id, MinimalUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken);
+    Task<ErrorOr<int>>Punch(Guid id, RegisterUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken);
 
     Task<PaginatedData<UserPunchTimeDto>> GetPaginatedPunches(CancellationToken cancellationToken);
 
     Task<UserPunchTimeDto?> GetPunch(int id,CancellationToken cancellationToken);
 
-    Task<EditUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken);
+    Task<MinimalUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken);
     
     Task<bool> DeletePunch(int id,CancellationToken cancellationToken);
     

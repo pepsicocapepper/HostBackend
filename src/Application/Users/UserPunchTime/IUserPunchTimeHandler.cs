@@ -12,7 +12,7 @@ namespace Application.PunchingTime;
 
 public interface IUserPunchTimeHandler
 {
-    Task<ErrorOr<int>>Punch(Guid id, MinimalUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken);
+    Task<ErrorOr<int>>Punch(Guid id, RegisterUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken);
 
     Task<UserPunchTimeDto?> GetPaginatedPunches(int id, CancellationToken cancellationToken);
 

@@ -21,17 +21,17 @@ public class UserPunchTimeHandler : IUserPunchTimeHandler
 {   
     private readonly IMapper _punchMapper;
     private readonly IApplicationDbContext _dbContext;
-    private readonly IValidator<MinimalUserPunchTimeDto> _registerUserPunchTimeValidator;
+    private readonly IValidator<RegisterUserPunchTimeDto> _registerUserPunchTimeValidator;
 
     public UserPunchTimeHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider, IMapper punchMapper,
-        IValidator<MinimalUserPunchTimeDto> registerPunchingTimeValidator) 
+        IValidator<RegisterUserPunchTimeDto> registerPunchingTimeValidator) 
     {
         _dbContext = dbContext;
         // _tokenProvider = tokenProvider;
         _punchMapper = punchMapper;
         _registerUserPunchTimeValidator = registerPunchingTimeValidator;
     }
-    public async Task<ErrorOr<int>>Punch(Guid id, MinimalUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken)
+    public async Task<ErrorOr<int>>Punch(Guid id, RegisterUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken)
     {
         var validationResult = _registerUserPunchTimeValidator.Validate(minPunchTimeDto);
 

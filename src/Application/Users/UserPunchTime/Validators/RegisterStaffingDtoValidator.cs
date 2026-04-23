@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Application.Users.Validators;
 
-internal sealed class MinimalUserPunchTimeDtoValidator : AbstractValidator<MinimalUserPunchTimeDto>
+internal sealed class MinimalUserPunchTimeDtoValidator : AbstractValidator<RegisterUserPunchTimeDto>
 {
     public MinimalUserPunchTimeDtoValidator()
     {
