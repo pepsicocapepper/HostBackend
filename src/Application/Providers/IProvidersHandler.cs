@@ -1,5 +1,4 @@
 using Application.Common.Models;
-using Application.Ingredients.Dtos;
 using Application.Providers.Dtos;
 using ErrorOr;
 
@@ -21,4 +20,6 @@ public interface IProvidersHandler
 
     public Task<ErrorOr<bool>> AddIngredient(CreateIngredientProviderDto dto,
         CancellationToken cancellationToken = default);
+
+    public Task<ErrorOr<bool>> UpdateProvider(UpdateProviderDto dto, CancellationToken cancellationToken = default);
 }

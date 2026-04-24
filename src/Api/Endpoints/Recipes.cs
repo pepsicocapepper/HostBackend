@@ -17,6 +17,7 @@ public static class Recipes
         group.MapGet("/{recipeId:guid}/available-ingredients", GetPaginatedIngredientsNotInRecipe)
             .RequireAuthorization();
         group.MapPost("/", CreateRecipe).RequireAuthorization();
+        group.MapPatch("/", UpdateRecipe).RequireAuthorization();
     }
 
     private static async Task<Ok<PaginatedData<RecipeDto>>> GetPaginatedRecipes(int? pageNumber, int? pageSize,
@@ -42,11 +43,26 @@ public static class Recipes
         return TypedResults.Ok(result.Value);
     }
 
-    private static async Task<Created> CreateRecipe(CreateRecipeDto dto, [FromServices] IRecipesHandler handler,
+    private static async Task<Created> CreateRecipe(
+        [FromBody] CreateRecipeDto dto, [FromServices] IRecipesHandler handler,
         CancellationToken cancellationToken = default)
     {
         await handler.CreateRecipe(dto, cancellationToken);
 
         return TypedResults.Created();
+    }
+
+    private static async Task<Results<Ok, NotFound<ProblemDetails>>> UpdateRecipe(
+        [FromBody] UpdateRecipeDto dto, [FromServices] IRecipesHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await handler.UpdateRecipe(dto, cancellationToken);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok();
     }
 }

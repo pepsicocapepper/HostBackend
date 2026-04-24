@@ -118,4 +118,23 @@ public class ProvidersHandler : IProvidersHandler
 
         return true;
     }
+
+    public async Task<ErrorOr<bool>> UpdateProvider(UpdateProviderDto dto, CancellationToken cancellationToken = default)
+    {
+        var provider = await _dbContext.Providers.FindAsync([dto.Id], cancellationToken);
+
+        if (provider == null)
+        {
+            return Error.NotFound(ProviderErrorCodes.NotFound);
+        }
+        
+        provider.Name = dto.Name;
+        provider.PhoneNumber = dto.PhoneNumber;
+        provider.Email = dto.Email;
+        provider.Address = dto.Address;
+        
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
 }

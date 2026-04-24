@@ -1,6 +1,5 @@
 using Api.Common.Extensions;
 using Application.Common.Models;
-using Application.Ingredients.Dtos;
 using Application.Providers;
 using Application.Providers.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,6 +18,7 @@ public static class Providers
         group.MapGet("/{id}", GetProviderById).RequireAuthorization();
         group.MapGet("/{providerId:guid}/ingredients", GetPaginatedProviderIngredients).RequireAuthorization();
         group.MapPost("/", CreateProvider).RequireAuthorization();
+        group.MapPatch("/", UpdateProvider).RequireAuthorization();
         group.MapPost("/{providerId:guid}/ingredients/${ingredientId:int}", AddIngredient).RequireAuthorization();
     }
 
@@ -71,6 +71,20 @@ public static class Providers
         }
 
         return TypedResults.CreatedAtRoute(result.Value, PaginatedProviders, new { });
+    }
+    
+    private static async Task<Results<Ok, NotFound<ProblemDetails>>> UpdateProvider(
+        [FromBody] UpdateProviderDto dto,
+        [FromServices] IProvidersHandler handler,
+        CancellationToken ct)
+    {
+        var result = await handler.UpdateProvider(dto, ct);
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok();
     }
 
     private static async Task<Results<Created, NotFound<ProblemDetails>>> AddIngredient(

@@ -31,4 +31,5 @@ public interface IBranchesHandler
         Guid branchId, CancellationToken cancellationToken = default);
 
     public Task<ErrorOr<Guid>> CreateBranch(CreateBranchDto branchDto, CancellationToken cancellationToken = default);
+    public Task<ErrorOr<bool>> UpdateBranch(UpdateBranchDto dto, CancellationToken cancellationToken = default);
 }

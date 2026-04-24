@@ -203,4 +203,25 @@ internal class BranchesHandler : IBranchesHandler
 
         return branch.Id;
     }
+
+    public async Task<ErrorOr<bool>> UpdateBranch(UpdateBranchDto dto, CancellationToken cancellationToken = default)
+    {
+        var branch = await _dbContext.Branches.FindAsync([dto.Id], cancellationToken);
+
+        if (branch == null)
+        {
+            return Error.NotFound(BranchErrorCodes.NotFound);
+        }
+
+        branch.AddressLine1 = dto.AddressLine1;
+        branch.AddressLine2 = dto.AddressLine2;
+        branch.AdministrativeArea = dto.AdministrativeArea;
+        branch.Country = dto.Country;
+        branch.ZipCode = dto.ZipCode;
+        branch.Locality = dto.Locality;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        
+        return true;
+    }
 }

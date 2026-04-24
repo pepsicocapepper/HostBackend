@@ -69,4 +69,27 @@ internal class RecipesHandler : IRecipesHandler
         await _dbContext.Recipes.AddAsync(recipe, cancellationToken);
         return await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<ErrorOr<bool>> UpdateRecipe(UpdateRecipeDto dto, CancellationToken cancellationToken = default)
+    {
+        var recipe = await _dbContext.Recipes.FindAsync([dto.Id], cancellationToken);
+
+        if (recipe == null)
+        {
+            return Error.NotFound(RecipeErrorCodes.NotFound);
+        }
+
+        recipe.Name = dto.Name;
+        recipe.RecipeIngredients = dto.Ingredients.Select(s => new RecipeIngredient
+        {
+            IngredientId = s.IngredientId,
+            Unit = s.Unit,
+            Quantity = s.Quantity
+        }).ToList();
+        recipe.Steps = dto.Steps;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
 }

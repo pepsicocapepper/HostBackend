@@ -22,6 +22,7 @@ public static class Branches
             .RequireAuthorization();
         group.MapPatch("/{branchId:guid}/ingredients", DeductInventory).RequireAuthorization();
         group.MapPost("/", CreateBranch).RequireAuthorization();
+        group.MapPatch("/", UpdateBranch).RequireAuthorization();
         group.MapPost("/{branchId:guid}/ingredients", AddIngredientsToBranch).RequireAuthorization();
     }
 
@@ -142,5 +143,20 @@ public static class Branches
         }
 
         return TypedResults.Created();
+    }
+
+    private static async Task<Results<Ok, NotFound<ProblemDetails>>> UpdateBranch(
+        [FromBody] UpdateBranchDto dto,
+        [FromServices] IBranchesHandler handler,
+        CancellationToken ct)
+    {
+        var result = await handler.UpdateBranch(dto, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok();
     }
 }

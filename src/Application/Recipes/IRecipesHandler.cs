@@ -15,4 +15,6 @@ public interface IRecipesHandler
         CancellationToken cancellationToken = default);
 
     public Task<ErrorOr<int>> CreateRecipe(CreateRecipeDto dto, CancellationToken cancellationToken = default);
+    
+    public Task<ErrorOr<bool>> UpdateRecipe(UpdateRecipeDto dto, CancellationToken cancellationToken = default);
 }
