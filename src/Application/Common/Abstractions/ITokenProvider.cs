@@ -5,5 +5,6 @@ namespace Application.Common.Abstractions;
 
 public interface ITokenProvider
 {
-    Task<TokensDto> GenerateTokensAsync(User user, string? existingRefreshToken);
+    public Task<TokensDto> GenerateTokensAsync(User user, string? existingRefreshToken,
+        CancellationToken cancellationToken = default);
 }

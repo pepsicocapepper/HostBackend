@@ -1,3 +1,4 @@
+using Api.Common.Extensions;
 using Application.Common.Dtos;
 using Application.Users;
 using Application.Users.Commands.LoginUser;
@@ -37,34 +38,43 @@ public static class Auth
         return TypedResults.Ok(response.Value);
     }
 
-    private static async Task<Results<Ok<AccessTokenDto>, NotFound>> Login(
-        [FromBody] LoginUserDto command,
-        HttpContext httpContext,
-        [FromServices] IUsersHandler handler,
-        CancellationToken ct)
+    private static async Task<Results<Ok<AccessTokenDto>, NotFound<ProblemDetails>>> Login(
+        [FromBody] LoginUserDto command, [FromServices] IUsersHandler handler,
+        HttpContext httpContext, CancellationToken ct)
     {
         httpContext.Request.Cookies.TryGetValue("refresh-token", out var refreshToken);
         var response = await handler.LoginUser(command, refreshToken, ct);
-        return response.ToAccessTokenDto(httpContext);
+
+        if (response.IsError)
+        {
+            return TypedResults.NotFound(response.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(response.Value.ToAccessTokenDto(httpContext));
     }
 
-    private static async Task<Results<Ok<AccessTokenDto>, NotFound>> RefreshToken(HttpContext httpContext,
+    private static async Task<Results<Ok<AccessTokenDto>, NotFound<ProblemDetails>, BadRequest>> RefreshToken(
+        HttpContext httpContext,
         [FromServices] IUsersHandler handler, CancellationToken cancellationToken)
     {
         if (!httpContext.Request.Cookies.TryGetValue("refresh-token", out var refreshToken))
         {
-            return TypedResults.NotFound();
+            return TypedResults.BadRequest();
         }
 
-        var response = await handler.RefreshToken(refreshToken, cancellationToken);
-        return response.ToAccessTokenDto(httpContext);
+        var result = await handler.RefreshToken(refreshToken, cancellationToken);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok(result.Value.ToAccessTokenDto(httpContext));
     }
 
-    private static Results<Ok<AccessTokenDto>, NotFound> ToAccessTokenDto(this TokensDto? dto,
+    private static AccessTokenDto ToAccessTokenDto(this TokensDto dto,
         HttpContext httpContext)
     {
-        if (dto is null) return TypedResults.NotFound();
-
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
@@ -74,6 +84,6 @@ public static class Auth
         };
 
         httpContext.Response.Cookies.Append("refresh-token", dto.RefreshToken, cookieOptions);
-        return TypedResults.Ok(new AccessTokenDto(dto.AccessToken));
+        return new AccessTokenDto(dto.AccessToken);
     }
 }

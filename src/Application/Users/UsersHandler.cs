@@ -47,22 +47,31 @@ public class UsersHandler : IUsersHandler
         return user.Id;
     }
 
-    public async Task<TokensDto?> LoginUser(LoginUserDto loginUserDto, string? existingRefreshToken,
+    public async Task<ErrorOr<TokensDto>> LoginUser(LoginUserDto loginUserDto, string? existingRefreshToken,
         CancellationToken cancellationToken)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(
             u => u.Pin == loginUserDto.Pin, cancellationToken);
-        return user != null ? await _tokenProvider.GenerateTokensAsync(user, existingRefreshToken) : null;
+
+        if (user == null)
+        {
+            return Error.NotFound("User.InvalidLogin");
+        }
+
+        return await _tokenProvider.GenerateTokensAsync(user, existingRefreshToken, cancellationToken);
     }
 
-    public async Task<TokensDto?> RefreshToken(string refreshToken, CancellationToken cancellationToken)
+    public async Task<ErrorOr<TokensDto>> RefreshToken(string refreshToken, CancellationToken cancellationToken)
     {
-        var dbToken =
-            await _dbContext.RefreshTokens
-                .Include(x => x.User)
-                .FirstOrDefaultAsync(x => x.Token == refreshToken,
-                    cancellationToken: cancellationToken);
-        if (dbToken is null) throw new InvalidOperationException("Refresh token not found");
+        var dbToken = await _dbContext.RefreshTokens
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.Token == refreshToken, cancellationToken);
+
+        if (dbToken == null)
+        {
+            return Error.NotFound("User.RefreshTokenNotFound");
+        }
+
         return await _tokenProvider.GenerateTokensAsync(dbToken.User, dbToken.Token);
     }
 }

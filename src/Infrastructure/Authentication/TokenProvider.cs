@@ -27,7 +27,8 @@ internal sealed class TokenProvider : ITokenProvider
         _logger = logger;
     }
 
-    private async Task<string> GenerateRefreshTokenAsync(string token, User user, string? existingRefreshToken)
+    private async Task<string> GenerateRefreshTokenAsync(string token, User user, string? existingRefreshToken,
+        CancellationToken cancellationToken = default)
     {
         var jwtHandler = new JwtSecurityTokenHandler();
         var jwtToken = jwtHandler.ReadJwtToken(token);
@@ -45,7 +46,7 @@ internal sealed class TokenProvider : ITokenProvider
         if (!string.IsNullOrEmpty(existingRefreshToken))
         {
             var existingToken = await _dbContext.RefreshTokens
-                .FirstOrDefaultAsync(x => x.Token == existingRefreshToken);
+                .FirstOrDefaultAsync(x => x.Token == existingRefreshToken, cancellationToken);
             _logger.LogInformation(existingToken?.Token);
             if (existingToken != null)
             {
@@ -54,8 +55,8 @@ internal sealed class TokenProvider : ITokenProvider
             }
         }
 
-        await _dbContext.RefreshTokens.AddAsync(refreshToken);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.RefreshTokens.AddAsync(refreshToken, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return refreshToken.Token;
     }
@@ -87,10 +88,11 @@ internal sealed class TokenProvider : ITokenProvider
         return token;
     }
 
-    public async Task<TokensDto> GenerateTokensAsync(User user, string? existingRefreshToken)
+    public async Task<TokensDto> GenerateTokensAsync(User user, string? existingRefreshToken,
+        CancellationToken cancellationToken = default)
     {
         var accessToken = GenerateAccessToken(user);
-        var refreshToken = await GenerateRefreshTokenAsync(accessToken, user, existingRefreshToken);
+        var refreshToken = await GenerateRefreshTokenAsync(accessToken, user, existingRefreshToken, cancellationToken);
         return new TokensDto(accessToken, refreshToken);
     }
 }
