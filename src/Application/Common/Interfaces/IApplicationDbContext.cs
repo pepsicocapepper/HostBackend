@@ -17,7 +17,7 @@ public interface IApplicationDbContext
     DbSet<Provider> Providers { get; }
     DbSet<IngredientProvider> IngredientProviders { get; }
     DbSet<Branch> Branches { get; }
-    DbSet<Staffing> Staffings { get; }
+    DbSet<Domain.Entities.Staffing> Staffings { get; }
     DbSet<Domain.Entities.UserPunchTime> UserPunchTimes { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

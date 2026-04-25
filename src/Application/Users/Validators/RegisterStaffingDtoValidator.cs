@@ -1,6 +1,7 @@
 using Application.Staffings.Dto;
 using Application.UserPunchTime.Dto;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Dtos;
 using FluentValidation;
 
 namespace Application.Users.Validators;

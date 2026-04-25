@@ -1,8 +1,7 @@
 using Application.Staffings.Dto;
-using Application.Users.Commands.RegisterUser;
 using FluentValidation;
 
-namespace Application.Users.Validators;
+namespace Application.Staffing.Validators;
 
 internal sealed class RegisterStaffingDtoValidator : AbstractValidator<RegisterStaffingDto>
 {
@@ -10,6 +9,5 @@ internal sealed class RegisterStaffingDtoValidator : AbstractValidator<RegisterS
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required");
-
     }
 }

@@ -8,9 +8,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
- builder.ToTable("host_user");
-        // builder.HasKey(t => t.Id).HasName("host_user_pkey");
-        // builder.HasAlternateKey(t => t.Pin).HasName("host_user_pin_key");
+        builder.ToTable("host_user");
+        builder.HasKey(t => t.Id).HasName("host_user_pkey");
         builder.HasIndex(t => t.Pin).IsUnique().HasDatabaseName("host_user_pin_key");
 
         builder.Property(t => t.Id).HasColumnName("id").IsRequired();
@@ -21,7 +20,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(t => t.Pin).HasColumnName("pin").IsRequired();
         builder.Property(t => t.Active).HasColumnName("active");
         builder.Property(t => t.CreatedAt).HasColumnName("created_at");
-         builder.Property(t => t.StaffingId).HasColumnName("staffing_id").IsRequired();
+        builder.Property(t => t.StaffingId).HasColumnName("staffing_id").IsRequired();
 
         builder.HasOne(t => t.Staffing)
             .WithMany(t => t.Users)
@@ -35,10 +34,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithMany(t => t.Users)
             .HasForeignKey(t => t.StaffingId)
             .HasConstraintName("host_user_staffing_id_fkey");
-        
+
         builder.HasOne(t => t.Branch)
-        .WithMany(t => t.Users)
-        .HasForeignKey(t => t.BranchId)
+            .WithMany(t => t.Users)
+            .HasForeignKey(t => t.BranchId)
             .HasConstraintName("host_user_branch_id_fkey");
     }
 }

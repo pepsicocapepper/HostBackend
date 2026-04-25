@@ -7,8 +7,8 @@ public class User : BaseEntity<Guid>
     public required string Name { get; set; }
     public required string Surname { get; set; }
     public required string Pin { get; set; }
-    public required string JobTitle  { get; set; }
-    public string? Phone  { get; set; }
+    public required string JobTitle { get; set; }
+    public string? Phone { get; set; }
     public bool? Active { get; set; }
     public DateTime CreatedAt { get; set; }
     public IEnumerable<RefreshToken>? RefreshTokens { get; set; }
@@ -17,7 +17,7 @@ public class User : BaseEntity<Guid>
     public IEnumerable<Bill>? Bills { get; set; }
     public IEnumerable<UserPunchTime>? UserPunchTimes { get; set; }
     public required Guid StaffingId { get; set; }
-    public Staffing Staffing { get; set; }=null!;
+    public Staffing Staffing { get; set; } = null!;
     public required Guid BranchId { get; set; }
     public Branch Branch { get; set; } = null!;
 }

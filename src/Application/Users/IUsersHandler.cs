@@ -1,38 +1,35 @@
-using System.Data.SqlTypes;
 using Application.Common.Dtos;
 using Application.Common.Models;
 using Application.UserPunchTime.Dto;
 using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
 using Application.Users.Dto;
+using Application.Users.Dtos;
 using ErrorOr;
 
 namespace Application.Users;
 
 public interface IUsersHandler
 {
-    Task<ErrorOr<Guid>>RegisterUser(RegisterUserDto registerUserDto, CancellationToken cancellationToken);
+    Task<ErrorOr<Guid>> RegisterUser(RegisterUserDto registerUserDto, CancellationToken cancellationToken = default);
 
     Task<TokensDto?> LoginUser(LoginUserDto loginUserDto, string? existingRefreshToken,
-        CancellationToken cancellationToken);
-    
+        CancellationToken cancellationToken = default);
 
-    Task<TokensDto?> RefreshToken(string refreshToken, CancellationToken cancellationToken);
-    Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken);
+    Task<TokensDto?> RefreshToken(string refreshToken, CancellationToken cancellationToken = default);
+    Task<PaginatedData<UserDto>> GetPaginatedUsers(CancellationToken cancellationToken = default);
 
-    Task<UserDto> GetUser(Guid id,CancellationToken cancellationToken);
+    Task<ErrorOr<UserDto>> GetUser(Guid id, CancellationToken cancellationToken = default);
 
-    Task<EditUserDto?> EditUser(Guid id,EditUserDto userDto,CancellationToken cancellationToken);
-    
-    Task<bool> DeleteUser(Guid id,CancellationToken cancellationToken);
-    Task<ErrorOr<int>>Punch(Guid id, RegisterUserPunchTimeDto minPunchTimeDto, CancellationToken cancellationToken);
+    Task<ErrorOr<bool>> UpdateUser(Guid id, EditUserDto userDto, CancellationToken cancellationToken = default);
 
-    Task<PaginatedData<UserPunchTimeDto>> GetPaginatedPunches(CancellationToken cancellationToken);
+    Task<bool> DeleteUser(Guid id, CancellationToken cancellationToken = default);
+    Task<ErrorOr<int>> Punch(RegisterUserPunchTimeDto dto, CancellationToken cancellationToken = default);
 
-    Task<UserPunchTimeDto?> GetPunch(int id,CancellationToken cancellationToken);
+    Task<PaginatedData<UserPunchTimeDto>> GetPaginatedPunches(PaginationQuery query,
+        CancellationToken cancellationToken = default);
 
-    Task<MinimalUserPunchTimeDto?> EditPunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken);
-    
-    Task<bool> DeletePunch(int id,CancellationToken cancellationToken);
-    
+    Task<ErrorOr<UserPunchTimeDto>> GetPunch(int id, CancellationToken cancellationToken = default);
+
+    Task DeletePunch(int id, CancellationToken cancellationToken = default);
 }

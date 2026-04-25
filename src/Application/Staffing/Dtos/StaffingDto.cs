@@ -1,20 +1,20 @@
 using AutoMapper;
-using Domain.Entities;
 
-namespace Application.Staffings.Dto;
+namespace Application.Staffing.Dtos;
 
 public class StaffingDto
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     // public bool Active { get; set; }
     public DateTime CreatedAt { get; set; }
+
     private class StaffingProfile : Profile
     {
         public StaffingProfile()
         {
-            CreateMap<Staffing, StaffingDto>();
+            CreateMap<Domain.Entities.Staffing, StaffingDto>();
         }
     }
 }
