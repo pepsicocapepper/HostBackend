@@ -3,6 +3,8 @@ using Application.Common.Dtos;
 using Application.Common.Interfaces;
 using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Dtos;
+using AutoMapper;
 using Domain.Entities;
 using ErrorOr;
 using FluentValidation;
@@ -14,14 +16,30 @@ public class UsersHandler : IUsersHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly ITokenProvider _tokenProvider;
+    private readonly IUserContext _userContext;
     private readonly IValidator<RegisterUserDto> _registerUserValidator;
+    private readonly IMapper _mapper;
 
     public UsersHandler(IApplicationDbContext dbContext, ITokenProvider tokenProvider,
-        IValidator<RegisterUserDto> registerUserValidator)
+        IValidator<RegisterUserDto> registerUserValidator, IUserContext userContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _tokenProvider = tokenProvider;
         _registerUserValidator = registerUserValidator;
+        _userContext = userContext;
+        _mapper = mapper;
+    }
+
+    public async Task<ErrorOr<MinimalUserDto>> GetSelfInfo(CancellationToken cancellationToken)
+    {
+        var user = await _dbContext.Users.FindAsync([_userContext.UserId!.Value], cancellationToken);
+
+        if (user == null)
+        {
+            return Error.NotFound("User.NotFound");
+        }
+
+        return _mapper.Map<MinimalUserDto>(user);
     }
 
     public async Task<ErrorOr<Guid>> RegisterUser(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
@@ -59,6 +77,14 @@ public class UsersHandler : IUsersHandler
         }
 
         return await _tokenProvider.GenerateTokensAsync(user, existingRefreshToken, cancellationToken);
+    }
+
+    public async Task LogoutUser(string refreshToken, CancellationToken cancellationToken = default)
+    {
+        await _dbContext
+            .RefreshTokens
+            .Where(u => u.Token == refreshToken)
+            .ExecuteDeleteAsync(cancellationToken);
     }
 
     public async Task<ErrorOr<TokensDto>> RefreshToken(string refreshToken, CancellationToken cancellationToken)

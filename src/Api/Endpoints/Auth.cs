@@ -3,6 +3,7 @@ using Application.Common.Dtos;
 using Application.Users;
 using Application.Users.Commands.LoginUser;
 using Application.Users.Commands.RegisterUser;
+using Application.Users.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,26 @@ public static class Auth
 {
     public static void MapAuth(this WebApplication app)
     {
-        var authGroup = app.MapGroup("/auth");
+        var group = app.MapGroup("/auth");
 
-        authGroup.MapPost("/register", Register);
-        authGroup.MapPost("/login", Login);
-        authGroup.MapGet("/refresh", RefreshToken);
+        group.MapGet("/me", GetSelfInfo).RequireAuthorization();
+        group.MapPost("/register", Register);
+        group.MapPost("/login", Login);
+        group.MapPost("/logout", Logout);
+        group.MapGet("/refresh", RefreshToken);
+    }
+
+    private static async Task<Results<Ok<MinimalUserDto>, UnauthorizedHttpResult>> GetSelfInfo(
+        [FromServices] IUsersHandler handler, CancellationToken ct)
+    {
+        var result = await handler.GetSelfInfo(ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.Unauthorized();
+        }
+
+        return TypedResults.Ok(result.Value);
     }
 
     private static async Task<Results<Ok<Guid>, BadRequest<ProblemDetails>>> Register([FromBody] RegisterUserDto dto,
@@ -51,6 +67,21 @@ public static class Auth
         }
 
         return TypedResults.Ok(response.Value.ToAccessTokenDto(httpContext));
+    }
+
+    private static async Task<NoContent> Logout([FromServices] IUsersHandler handler, HttpContext httpContext,
+        CancellationToken ct)
+    {
+        httpContext.Request.Cookies.TryGetValue("refresh-token", out var refreshToken);
+
+        if (refreshToken != null)
+        {
+            await handler.LogoutUser(refreshToken, ct);
+        }
+
+        httpContext.Response.Cookies.Delete("refresh-token");
+
+        return TypedResults.NoContent();
     }
 
     private static async Task<Results<Ok<AccessTokenDto>, NotFound<ProblemDetails>, BadRequest>> RefreshToken(
