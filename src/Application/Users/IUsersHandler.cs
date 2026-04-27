@@ -32,4 +32,6 @@ public interface IUsersHandler
     Task<ErrorOr<UserPunchTimeDto>> GetPunch(int id, CancellationToken cancellationToken = default);
 
     Task DeletePunch(int id, CancellationToken cancellationToken = default);
+
+    Task<ErrorOr<MinimalUserPunchTimeDto>> UpdatePunch(int id,EditUserPunchTimeDto editPunchDto,CancellationToken cancellationToken=default);
 }

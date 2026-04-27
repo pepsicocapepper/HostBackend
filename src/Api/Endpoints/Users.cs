@@ -32,7 +32,8 @@ public static class Users
 
         punchGroup.MapGet("/", GetPaginatedPunches).WithName(PaginatedPunchesRoute);
         punchGroup.MapGet("/{id:int}", GetPunch).WithName(GetPunchRoute);
-        punchGroup.MapPost("/{id:int}", Punch);
+        punchGroup.MapPost("/", Punch);
+        punchGroup.MapPut("/{id:int}",UpdatePunch);
         punchGroup.MapDelete("/{id:int}", DeletePunch);
     }
 
@@ -134,4 +135,18 @@ public static class Users
 
         return TypedResults.NoContent();
     }
-}
+
+        private static async Task<Results<Ok, NotFound<ProblemDetails>>>
+        UpdatePunch(int id, [FromServices] IUsersHandler handler, EditUserPunchTimeDto userPunchDto, CancellationToken ct)
+    {
+        var result = await handler.UpdatePunch(id, userPunchDto, ct);
+
+        if (result.IsError)
+        {
+            return TypedResults.NotFound(result.FirstError.ToProblemDetails());
+        }
+
+        return TypedResults.Ok();
+    }
+} 
+
